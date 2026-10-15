@@ -206,6 +206,17 @@ test('3. all five levels are playable end to end', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test('3b. the incident level asks two different questions (issue #1)', async ({ page }) => {
+  await prepare(page);
+  await openGame(page);
+  const questions = await api(page, (a) => a.GAME_CONFIG.incident.questions);
+  expect(new Set(questions.map((q) => q.prompt)).size).toBe(questions.length);
+  // The follow-up must not just repeat the database diagnosis.
+  const followUp = questions[1];
+  expect(followUp.prompt).not.toMatch(/DATABASE|database|root cause/);
+  expect(followUp.options[followUp.correctIndex]).not.toMatch(/DATABASE_URL/);
+});
+
 /* ------------------------------------------------------------------ */
 /* 4 & 5. Correct and incorrect answers                                */
 /* ------------------------------------------------------------------ */
