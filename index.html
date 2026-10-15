@@ -422,6 +422,97 @@ table.board { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 @keyframes glitch { 0% { transform: translate(1px, -1px); filter: hue-rotate(40deg); } 100% { transform: translate(-1px, 1px); filter: none; } }
 
 /* =====================================================================
+   SECRET ARCADE ("GRADIENT DESCENT")
+   ===================================================================== */
+body.arcade-open { overflow: hidden; }
+body.arcade-open .toasts { top: 64px; bottom: auto; z-index: 90; pointer-events: none; }
+.arcade-overlay {
+  position: fixed; inset: 0; z-index: 80; display: flex; flex-direction: column;
+  background: #000; color: #d1fae5; overflow: hidden; overscroll-behavior: contain;
+}
+.arcade-top {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0;
+  padding: 8px 12px; border-bottom: 1px solid rgba(74, 222, 128, 0.25);
+  background: linear-gradient(180deg, rgba(4, 22, 11, 0.98), rgba(0, 0, 0, 0.96));
+}
+.arcade-brand { display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; }
+.arcade-title {
+  font-size: clamp(0.95rem, 2.6vw, 1.2rem); font-weight: 900; letter-spacing: 0.14em; white-space: nowrap;
+  background: linear-gradient(90deg, #4ade80, var(--cyan) 55%, var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.arcade-sub { font-size: 0.68rem; color: #86efac; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.arcade-keys { margin: 0; flex: 1 1 280px; text-align: center; font-size: 0.72rem; color: #6ee7b7; opacity: 0.8; }
+.arcade-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+.arcade-btn { border-color: rgba(74, 222, 128, 0.4); background: rgba(34, 197, 94, 0.08); color: #bbf7d0; }
+.arcade-btn:hover:not(:disabled) { border-color: #4ade80; background: rgba(34, 197, 94, 0.18); }
+.arcade-stage { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; touch-action: none; outline: none; }
+.arcade-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.arcade-panel {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(460px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow: auto;
+  padding: 20px 18px; border-radius: 14px; text-align: center;
+  background: rgba(0, 12, 5, 0.86); border: 1px solid rgba(74, 222, 128, 0.5);
+  box-shadow: 0 0 40px rgba(34, 197, 94, 0.22), inset 0 0 30px rgba(34, 197, 94, 0.08);
+}
+.arcade-eyebrow { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: #4ade80; }
+.arcade-logo {
+  margin: 6px 0 2px; font-size: clamp(1.5rem, 7vw, 2.4rem); font-weight: 900; letter-spacing: 0.08em; line-height: 1.1;
+  background: linear-gradient(90deg, #4ade80, var(--cyan), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 14px rgba(34, 211, 238, 0.35));
+}
+.arcade-tagline { color: #a7f3d0; font-style: italic; margin: 0 0 8px; }
+.arcade-story { color: #d1fae5; font-size: 0.84rem; }
+.arcade-quip { color: #bbf7d0; font-size: 0.88rem; }
+.arcade-controls { list-style: none; padding: 0; margin: 12px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; text-align: left; font-size: 0.78rem; }
+.arcade-controls li { display: flex; gap: 8px; align-items: baseline; min-width: 0; }
+.arcade-controls kbd {
+  flex: 0 0 auto; font: inherit; font-size: 0.72rem; color: #04140a; background: #86efac;
+  border-radius: 5px; padding: 1px 6px; box-shadow: 0 2px 0 #166534;
+}
+.arcade-hi { color: var(--amber); font-size: 0.8rem; }
+.arcade-new-hi { color: var(--gold); font-weight: 800; }
+.arcade-score { display: flex; justify-content: center; gap: 22px; margin: 12px 0 4px; }
+.arcade-score .label { display: block; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: #6ee7b7; }
+.arcade-score strong { font-size: 1.5rem; font-variant-numeric: tabular-nums; color: #ecfeff; }
+.arcade-panel-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+.arcade-powerbar {
+  list-style: none; margin: 0; padding: 6px 8px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px;
+  background: #020a05; border-top: 1px solid rgba(74, 222, 128, 0.25);
+}
+.arcade-slot {
+  min-width: 0; padding: 4px 2px; border-radius: 6px; text-align: center; line-height: 1.25;
+  border: 1px solid rgba(74, 222, 128, 0.28); background: rgba(34, 197, 94, 0.05); color: #86efac;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+.arcade-slot .slot-name { display: block; font-weight: 800; font-size: clamp(8px, 2.3vw, 12px); letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.arcade-slot .slot-effect { display: block; font-size: clamp(7px, 2vw, 10px); letter-spacing: 0; text-transform: uppercase; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.arcade-slot.is-owned { border-color: rgba(34, 211, 238, 0.6); color: #a5f3fc; }
+.arcade-slot.is-maxed { opacity: 0.5; }
+.arcade-slot.is-lit {
+  opacity: 1; color: #1a1205; border-color: #fde68a; background: linear-gradient(180deg, #fcd34d, #f59e0b);
+  box-shadow: 0 0 16px rgba(251, 191, 36, 0.6); animation: slot-pulse 0.9s ease-in-out infinite;
+}
+@keyframes slot-pulse { 50% { box-shadow: 0 0 4px rgba(251, 191, 36, 0.3); } }
+.arcade-touch { display: none; }
+.arcade-overlay.is-touch .arcade-touch {
+  display: flex; align-items: center; gap: 10px; padding: 8px 12px max(8px, env(safe-area-inset-bottom));
+  background: #020a05; border-top: 1px solid rgba(74, 222, 128, 0.18);
+}
+.arcade-touch-hint { flex: 1 1 auto; min-width: 0; font-size: 0.74rem; color: #6ee7b7; }
+.arcade-merge { min-height: 50px; padding: 0 18px; font-size: 1rem; white-space: nowrap; flex: 0 0 auto; }
+.arcade-merge.is-ready { color: #1a1205; background: linear-gradient(180deg, #fcd34d, #f59e0b); border-color: #fde68a; }
+.arcade-overlay.is-touch .arcade-keys { display: none; }
+@media (max-width: 720px) { .arcade-keys { display: none; } }
+@media (max-width: 480px) {
+  .arcade-top { padding: 6px 8px; gap: 6px; flex-wrap: nowrap; }
+  .arcade-title { font-size: 0.82rem; letter-spacing: 0.06em; }
+  .arcade-sub { display: none; }
+  .arcade-actions { gap: 4px; }
+  .arcade-actions .btn-small { padding: 5px 8px; min-height: 40px; }
+  .arcade-controls { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* =====================================================================
    RESPONSIVE
    ===================================================================== */
 @media (max-width: 860px) {
@@ -487,7 +578,7 @@ html[data-motion="reduced"] #particles { display: none; }
           <form id="nickname-form" class="nickname-form" novalidate>
             <label for="nickname">Nickname <span class="muted small">(shown on the local leaderboard)</span></label>
             <div class="nickname-row">
-              <input type="text" id="nickname" name="nickname" maxlength="20" autocomplete="nickname" spellcheck="false" placeholder="e.g. git_blame_me" required aria-describedby="nickname-error">
+              <input type="text" id="nickname" name="nickname" maxlength="32" autocomplete="nickname" spellcheck="false" placeholder="e.g. git_blame_me" required aria-describedby="nickname-error">
               <button type="submit" id="start-btn" class="btn btn-primary">Start benchmark ▸</button>
             </div>
             <div id="nickname-error" class="form-error" role="alert"></div>
@@ -668,6 +759,7 @@ html[data-motion="reduced"] #particles { display: none; }
       leaderboard: 'ctoexe.leaderboard.v1',
       lastEntryId: 'ctoexe.lastEntryId.v1',
       motion: 'ctoexe.motion.v1',
+      arcadeHighScore: 'ctoexe.arcade.highscore.v1',
     },
     sharedLeaderboardUrl: 'shared-leaderboard.json',
     countdownSteps: ['3', '2', '1', 'GO'],
@@ -904,6 +996,12 @@ html[data-motion="reduced"] #particles { display: none; }
         revealVariant: 'richard',
       },
     },
+    /* Phrases (compared after normalizeNickname: trimmed + lower-cased) that
+       open the secret arcade "GRADIENT DESCENT" instead of a benchmark run.
+       They are matched before nickname validation, so they may exceed the
+       20-character nickname limit (the input accepts up to 32 raw characters).
+       They never start a run and never reach the leaderboard. */
+    secretArcadeNicknames: ['richard ist der beste'],
     glitchNotices: [
       'KEYBOARD_BUFFER_UNDERFLOW — input stream resynchronized',
       'ERR_KEYSTROKE_NOT_FOUND (404) — retrying…',
@@ -914,6 +1012,11 @@ html[data-motion="reduced"] #particles { display: none; }
 
   function normalizeNickname(nickname) {
     return String(nickname == null ? '' : nickname).trim().toLowerCase();
+  }
+
+  /** True when the nickname unlocks the secret arcade instead of the benchmark. */
+  function isSecretArcadeNickname(nickname) {
+    return PLAYER_RULES.secretArcadeNicknames.includes(normalizeNickname(nickname));
   }
 
   function resolvePlayerRules(nickname) {
@@ -1406,7 +1509,12 @@ html[data-motion="reduced"] #particles { display: none; }
     seniorStackOverflow: { icon: '🎓', title: 'Senior Stack Overflow Engineer', description: 'Completed every level of CTO.exe.' },
     cheatCodeEnjoyer: { icon: '🕹️', title: 'Cheat Code Enjoyer', description: 'Entered the Konami code.' },
     readsReleaseNotes: { icon: '📜', title: 'Reads Release Notes', description: 'Statistically rare behaviour.' },
+    architectOfTheMatrix: { icon: '🕶️', title: 'Architect of the Matrix', description: 'Found the secret arcade behind the nickname field.' },
+    monolithDecomposer: { icon: '🧱', title: 'Monolith Decomposer', description: 'Refactored THE LEGACY MONOLITH in GRADIENT DESCENT.' },
   };
+
+  /** ↑ ↑ ↓ ↓ ← → ← → B A — used by the Matrix egg and, separately, inside the arcade. */
+  const KONAMI_SEQUENCE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
   const Particles = {
     canvas: null, ctx: null, dots: [], frame: null,
@@ -1488,7 +1596,7 @@ html[data-motion="reduced"] #particles { display: none; }
   const Matrix = {
     overlay: null, frame: null, timeoutId: null,
     open() {
-      if (this.overlay) return;
+      if (this.overlay || SecretArcade.isOpen) return;
       const canvas = el('canvas', { 'aria-hidden': 'true' });
       const closeBtn = el('button', { type: 'button', class: 'btn', text: 'Exit the Matrix', onclick: () => this.close() });
       this.overlay = el('div', { id: 'matrix-overlay', class: 'matrix-overlay', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Matrix mode' }, [
@@ -1530,7 +1638,1525 @@ html[data-motion="reduced"] #particles { display: none; }
   };
 
   /* =====================================================================
-     11. LEVEL CONTROLLERS
+     11. SECRET ARCADE — "GRADIENT DESCENT", a Matrix-grade shoot-'em-up.
+     Opens instead of the benchmark when the nickname is listed in
+     PLAYER_RULES.secretArcadeNicknames. An original horizontal shooter in
+     the classic power-up-bar style, drawn entirely on a <canvas>.
+     Input, update and render are separate; close() stops every loop and
+     listener it started. Tuning lives in ARCADE_CONFIG.
+     ===================================================================== */
+  const ARCADE_CONFIG = {
+    title: 'GRADIENT DESCENT',
+    subtitle: "A Matrix-grade shoot-'em-up",
+    lives: 3,
+    view: { baseHeight: 360, minWidth: 440, maxDpr: 2 },   // logical units; the world is scaled to fit the stage
+    maxFrameSec: 0.05,             // long frames (tab switches, slow phones) are clamped…
+    stepSec: 1 / 60,               // …and simulated in fixed sub-steps, so speed never depends on frame rate
+    scrollSpeed: 60,               // background parallax, logical units per second
+    player: {
+      radius: 6, baseSpeed: 150, speedPerLevel: 45, fireCooldown: 0.14, missileCooldown: 0.8,
+      respawnSec: 1.6, invulnerableSec: 2.4, optionSpacing: 14, shieldHits: 3, dragGain: 1.35,
+    },
+    // Classic power-up bar: each PR capsule moves the highlight one slot right; "merge" buys it.
+    powerUps: [
+      { id: 'speed', name: 'Overclock', effect: 'speed', max: 4 },
+      { id: 'missile', name: 'Async', effect: 'missile', max: 1 },
+      { id: 'double', name: 'Fork', effect: 'double', max: 1 },
+      { id: 'laser', name: 'Regex', effect: 'laser', max: 1 },
+      { id: 'option', name: 'Pair Prog', effect: 'option', max: 2 },
+      { id: 'shield', name: 'Try/Catch', effect: 'shield', max: 3 },
+    ],
+    enemies: {
+      bug: { hp: 1, r: 11, score: 100 },     // 🐛 sine-wave swarms
+      npe: { hp: 1, r: 11, score: 150 },     // NullPointerException drones, flying in formation
+      smith: { hp: 3, r: 12, score: 250 },   // sunglasses agents: turrets on the ceiling and floor
+      merge: { hp: 8, r: 24, score: 400 },   // merge-conflict blocks: slow, tanky, spit conflict markers
+    },
+    smithCapsuleChance: 0.35,
+    scores: { capsule: 50, barrier: 200, boss: 5000, lifeBonus: 1000 },
+    boss: {
+      name: 'THE LEGACY MONOLITH', subtitle: 'code owner: Agent Daniel · 2,147 review comments',
+      coreHp: 40, barrierHp: 4, barriers: 4, width: 120,
+    },
+    bossWarningAt: 46,             // stage seconds before "LEGACY CODE APPROACHING"
+    bossWarningSec: 3,
+    // The stage script: `at` is stage seconds, `y` a fraction of the screen height.
+    stage: [
+      { at: 1.5, wave: 'bugs', y: 0.3, count: 5, carrier: true },
+      { at: 5, wave: 'drones', y: 0.65, count: 5 },
+      { at: 9, wave: 'agents', count: 2 },
+      { at: 11, wave: 'bugs', y: 0.7, count: 5, carrier: true },
+      { at: 14, wave: 'merge', y: 0.4 },
+      { at: 17, wave: 'drones', y: 0.3, count: 6 },
+      { at: 20, wave: 'agents', count: 3 },
+      { at: 21.5, wave: 'bugs', y: 0.5, count: 6, carrier: true },
+      { at: 25, wave: 'merge', y: 0.25 },
+      { at: 25.6, wave: 'merge', y: 0.75 },
+      { at: 29, wave: 'drones', y: 0.5, count: 7 },
+      { at: 32, wave: 'bugs', y: 0.25, count: 5, carrier: true },
+      { at: 32.6, wave: 'bugs', y: 0.75, count: 5 },
+      { at: 36, wave: 'agents', count: 4 },
+      { at: 38, wave: 'drones', y: 0.35, count: 6 },
+      { at: 40, wave: 'drones', y: 0.7, count: 6 },
+      { at: 43, wave: 'merge', y: 0.5 },
+    ],
+    glyphs: '01アイウエオカキクケコサシスセソタチツテトナニヌネノ{}<>/=;$#λ'.split(''),
+    font: 'ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace',
+    // Optional WebAudio blips (off by default, very quiet, no audio files).
+    sfx: {
+      shoot: { type: 'square', from: 880, to: 440, dur: 0.05, vol: 0.008 },
+      boom: { type: 'sawtooth', from: 180, to: 40, dur: 0.3, vol: 0.03 },
+      capsule: { type: 'sine', from: 660, to: 990, dur: 0.12, vol: 0.025 },
+      power: { type: 'triangle', from: 440, to: 1320, dur: 0.25, vol: 0.03 },
+      hit: { type: 'square', from: 240, to: 90, dur: 0.15, vol: 0.02 },
+      deny: { type: 'square', from: 140, to: 120, dur: 0.1, vol: 0.015 },
+    },
+  };
+
+  const ARCADE_KEYS = {
+    up: ['ArrowUp', 'w'], down: ['ArrowDown', 's'], left: ['ArrowLeft', 'a'], right: ['ArrowRight', 'd'],
+    fire: [' ', 'j'], merge: ['Shift', 'k'], pause: ['p'], sound: ['m'],
+  };
+
+  const SecretArcade = {
+    overlay: null, dom: null, ctx: null, frame: null, lastTime: 0, animTime: 0, listeners: [],
+    view: { cssW: 0, cssH: 0, scale: 1, dpr: 1, W: 640, H: 360 },
+    mode: 'closed',                // closed | title | playing | paused | gameover | win
+    world: null, bg: null, input: null, random: Math.random,
+    highScore: 0, returnFocus: null, isTouch: false, powerBarKey: '',
+    sound: { ctx: null, on: false },
+    debug: { invulnerable: false },
+
+    get isOpen() { return this.overlay !== null; },
+
+    /* ----------------------------- lifecycle ----------------------------- */
+    open({ returnFocus = null } = {}) {
+      if (this.overlay) return;
+      Matrix.close();
+      this.returnFocus = returnFocus || document.activeElement;
+      const seed = testHooks && Number.isInteger(testHooks.seed) ? testHooks.seed : randomUint32();
+      this.random = createSeededRandom(seed);
+      this.highScore = this.loadHighScore();
+      this.input = { keys: new Set(), pointer: null, konami: 0 };
+      this.debug = { invulnerable: false };
+      this.isTouch = (navigator.maxTouchPoints || 0) > 0 || !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+      this.buildDom();
+      document.body.append(this.overlay);
+      document.body.classList.add('arcade-open');
+      this.listen(document, 'keydown', (event) => this.onKeyDown(event));
+      this.listen(document, 'keyup', (event) => this.onKeyUp(event));
+      this.listen(window, 'blur', () => this.releaseInput());
+      this.listen(window, 'resize', () => this.resize());
+      this.listen(document, 'visibilitychange', () => this.onVisibilityChange());
+      const canvas = this.dom.canvas;
+      this.listen(canvas, 'pointerdown', (event) => this.onPointerDown(event));
+      this.listen(canvas, 'pointermove', (event) => this.onPointerMove(event));
+      this.listen(canvas, 'pointerup', (event) => this.onPointerUp(event));
+      this.listen(canvas, 'pointercancel', (event) => this.onPointerUp(event));
+      this.resize();
+      this.world = this.newWorld();
+      this.mode = 'title';
+      this.showPanel('title');
+      this.lastTime = 0;
+      this.frame = requestAnimationFrame((now) => this.loop(now));
+      Game.unlockOutsideRun('architectOfTheMatrix');
+    },
+
+    close() {
+      if (!this.overlay) return;
+      if (this.frame) cancelAnimationFrame(this.frame);
+      this.frame = null;
+      for (const [target, type, handler] of this.listeners) target.removeEventListener(type, handler);
+      this.listeners = [];
+      this.stopSound();
+      this.overlay.remove();
+      this.overlay = null; this.dom = null; this.ctx = null; this.world = null; this.bg = null; this.input = null;
+      this.mode = 'closed';
+      document.body.classList.remove('arcade-open');
+      const target = this.returnFocus && this.returnFocus.isConnected ? this.returnFocus : $('#nickname');
+      this.returnFocus = null;
+      if (target && target.focus) target.focus();
+    },
+
+    listen(target, type, handler) {
+      target.addEventListener(type, handler);
+      this.listeners.push([target, type, handler]);
+    },
+
+    buildDom() {
+      const C = ARCADE_CONFIG;
+      const small = (id, text, label, onclick, extra = {}) => el('button', { type: 'button', id, class: 'btn btn-small arcade-btn', text, 'aria-label': label, onclick, ...extra });
+      const canvas = el('canvas', { id: 'arcade-canvas', role: 'img', 'aria-label': `${C.title} playfield` });
+      const panel = el('div', { id: 'arcade-panel', class: 'arcade-panel', hidden: true });
+      const stage = el('div', { class: 'arcade-stage', tabindex: '-1' }, [canvas, panel]);
+      const slots = C.powerUps.map((p) => el('li', { class: 'arcade-slot', dataset: { power: p.id } }, [
+        el('span', { class: 'slot-name', text: p.name }), el('span', { class: 'slot-effect', text: p.effect }),
+      ]));
+      const soundBtn = small('arcade-sound', '♪ off', 'Sound', () => this.toggleSound(), { 'aria-pressed': 'false' });
+      const pauseBtn = small('arcade-pause', '❚❚', 'Pause', () => this.togglePause());
+      const exitBtn = small('arcade-exit', 'Exit ✕', 'Exit the arcade', () => this.close());
+      const mergeBtn = el('button', { type: 'button', id: 'arcade-merge', class: 'btn arcade-btn arcade-merge', text: '⚡ Merge', 'aria-label': 'Merge the highlighted upgrade', onclick: () => this.merge() });
+      const status = el('div', { id: 'arcade-status', class: 'sr-only', role: 'status' });
+      this.overlay = el('div', {
+        id: 'arcade-overlay', class: `arcade-overlay${this.isTouch ? ' is-touch' : ''}`,
+        role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'arcade-title', 'aria-describedby': 'arcade-help',
+      }, [
+        el('header', { class: 'arcade-top' }, [
+          el('div', { class: 'arcade-brand' }, [el('h2', { id: 'arcade-title', class: 'arcade-title', text: C.title }), el('span', { class: 'arcade-sub', text: C.subtitle })]),
+          el('p', { id: 'arcade-help', class: 'arcade-keys', text: this.isTouch
+            ? 'Drag to fly · auto-fire · ⚡ Merge buys the highlighted upgrade'
+            : 'Arrows/WASD move · Space/J fire · Shift/K merge · P pause · Esc exit' }),
+          el('div', { class: 'arcade-actions' }, [soundBtn, pauseBtn, exitBtn]),
+        ]),
+        stage,
+        el('ol', { class: 'arcade-powerbar', 'aria-label': 'Merge bar: PR capsules move the highlight, merge buys it' }, slots),
+        el('div', { class: 'arcade-touch' }, [el('span', { class: 'arcade-touch-hint', text: 'Drag to fly · auto-fire' }), mergeBtn]),
+        status,
+      ]);
+      this.dom = { canvas, panel, stage, slots, soundBtn, pauseBtn, mergeBtn, status };
+      this.ctx = canvas.getContext ? canvas.getContext('2d') : null;
+      this.powerBarKey = '';
+    },
+
+    resize() {
+      if (!this.dom) return;
+      const cfg = ARCADE_CONFIG.view;
+      const rect = this.dom.stage.getBoundingClientRect();
+      const cssW = Math.max(1, rect.width), cssH = Math.max(1, rect.height);
+      const scale = Math.min(cssH / cfg.baseHeight, cssW / cfg.minWidth);
+      const dpr = Math.min(window.devicePixelRatio || 1, cfg.maxDpr);
+      Object.assign(this.view, { cssW, cssH, scale, dpr, W: cssW / scale, H: cssH / scale });
+      this.dom.canvas.width = Math.max(1, Math.round(cssW * dpr));
+      this.dom.canvas.height = Math.max(1, Math.round(cssH * dpr));
+      this.bg = this.createBackground();
+      if (this.world) {
+        const p = this.world.player;
+        p.x = clamp(p.x, 14, this.view.W - 20);
+        p.y = clamp(p.y, 14, this.view.H - 14);
+      }
+      if (this.ctx) this.render();
+    },
+
+    newWorld() {
+      const { W, H } = this.view;
+      return {
+        time: 0, stageTime: 0, nextEvent: 0, score: 0, lives: ARCADE_CONFIG.lives,
+        player: { x: Math.min(80, W * 0.15), y: H / 2, dead: false, respawn: 0, invulnerable: 0, fireCooldown: 0, missileCooldown: 0, trail: [] },
+        power: { speed: 0, missile: false, double: false, laser: false, options: 0, shield: 0 },
+        powerIndex: -1,
+        bullets: [], enemyBullets: [], enemies: [], capsules: [], particles: [], texts: [],
+        formations: {}, nextId: 1,
+        boss: null, bossState: 'none', bossTimer: 0,
+        banner: null, shake: 0, flash: 0,
+        konamiGrants: 0, pendingEnd: null,
+      };
+    },
+
+    startGame() {
+      if (!this.overlay) return;
+      this.world = this.newWorld();
+      this.releaseInput();
+      this.mode = 'playing';
+      this.hidePanel();
+      this.banner('STAGE 1', '/dev/null valley', 2.2, '#4ade80');
+      this.announce('Game started.');
+      this.lastTime = 0;
+      this.dom.stage.focus({ preventScroll: true });
+    },
+
+    togglePause() {
+      if (this.mode === 'playing') this.pause();
+      else if (this.mode === 'paused') this.resume();
+    },
+    pause() {
+      if (this.mode !== 'playing') return;
+      this.mode = 'paused';
+      this.releaseInput();
+      this.showPanel('paused');
+    },
+    resume() {
+      if (this.mode !== 'paused') return;
+      this.mode = 'playing';
+      this.hidePanel();
+      this.lastTime = 0;
+      this.dom.stage.focus({ preventScroll: true });
+    },
+
+    finish(result) {
+      const w = this.world;
+      if (result === 'win') w.score += Math.max(0, w.lives) * ARCADE_CONFIG.scores.lifeBonus;
+      const isNewHigh = w.score > this.highScore;
+      if (isNewHigh) { this.highScore = w.score; this.saveHighScore(w.score); }
+      this.mode = result;
+      this.releaseInput();
+      if (result === 'win') Game.unlockOutsideRun('monolithDecomposer');
+      this.showPanel(result, { isNewHigh });
+      this.announce(result === 'win' ? `Stage clear. Score ${formatInt(w.score)}.` : `Game over. Score ${formatInt(w.score)}.`);
+    },
+
+    loadHighScore() {
+      const value = Number(Storage.get(GAME_CONFIG.storageKeys.arcadeHighScore, 0));
+      return Number.isFinite(value) && value > 0 ? Math.floor(Math.min(value, 99999999)) : 0;
+    },
+    saveHighScore(score) { Storage.set(GAME_CONFIG.storageKeys.arcadeHighScore, Math.floor(score)); },
+
+    /* ------------------------------- panels ------------------------------ */
+    showPanel(kind, { isNewHigh = false } = {}) {
+      const C = ARCADE_CONFIG;
+      const w = this.world;
+      const button = (id, text, primary, onclick) => el('button', { type: 'button', id, class: `btn ${primary ? 'btn-primary' : 'arcade-btn'}`, text, onclick });
+      const exit = button('arcade-panel-exit', 'Exit', false, () => this.close());
+      const scores = () => el('div', { class: 'arcade-score' }, [
+        el('div', {}, [el('span', { class: 'label', text: 'Score' }), el('strong', { id: 'arcade-final-score', text: formatInt(w.score) })]),
+        el('div', {}, [el('span', { class: 'label', text: 'High score' }), el('strong', { text: formatInt(this.highScore) })]),
+      ]);
+      let primary;
+      let children;
+      if (kind === 'title') {
+        primary = button('arcade-start', '▶ Start', true, () => this.startGame());
+        const controls = this.isTouch
+          ? [['drag', 'fly + auto-fire'], ['⚡ Merge', 'buy upgrade'], ['❚❚', 'pause'], ['Exit', 'leave']]
+          : [['←↑↓→ WASD', 'fly'], ['Space / J', 'fire'], ['Shift / K', 'merge upgrade'], ['P', 'pause'], ['M', 'sound'], ['Esc', 'exit']];
+        children = [
+          el('div', { class: 'arcade-eyebrow', text: '// secret build · not for production' }),
+          el('h3', { class: 'arcade-logo', text: C.title }),
+          el('p', { class: 'arcade-tagline', text: C.subtitle }),
+          el('p', { class: 'arcade-story', text: `${C.boss.name} escaped code review. Squash bugs, catch PR capsules to move the merge bar, then merge an upgrade.` }),
+          el('ul', { class: 'arcade-controls', 'aria-label': 'Controls' }, controls.map(([key, what]) => el('li', {}, [el('kbd', { text: key }), el('span', { text: what })]))),
+          el('p', { class: 'arcade-hi', text: `High score: ${formatInt(this.highScore)}` }),
+          el('div', { class: 'arcade-panel-actions' }, [primary, exit]),
+        ];
+      } else if (kind === 'paused') {
+        primary = button('arcade-resume', '▶ Resume', true, () => this.resume());
+        children = [
+          el('div', { class: 'arcade-eyebrow', text: 'git stash' }),
+          el('h3', { class: 'arcade-logo', text: 'PAUSED' }),
+          el('p', { class: 'arcade-quip', text: 'Your run is stashed. The monolith is waiting, as monoliths do.' }),
+          el('div', { class: 'arcade-panel-actions' }, [primary, exit]),
+        ];
+      } else {
+        const won = kind === 'win';
+        primary = button('arcade-play-again', '↻ Play again', true, () => this.startGame());
+        children = [
+          el('div', { class: 'arcade-eyebrow', text: won ? 'Stage clear · all checks passed' : 'Segmentation fault (core dumped)' }),
+          el('h3', { class: 'arcade-logo', text: won ? 'MONOLITH DECOMPOSED' : 'GAME OVER' }),
+          el('p', { class: 'arcade-quip', text: won
+            ? 'Agent Daniel left one final review comment: "LGTM. Ship it." The monolith is now 42 microservices.'
+            : 'The monolith lives to deploy another Friday. Have you tried turning it off and on again?' }),
+          won ? el('p', { class: 'arcade-hi', text: `Life bonus: ${Math.max(0, w.lives)} × ${formatInt(C.scores.lifeBonus)}` }) : null,
+          scores(),
+          isNewHigh ? el('p', { class: 'arcade-new-hi', text: '★ New high score! ★' }) : null,
+          el('div', { class: 'arcade-panel-actions' }, [primary, exit]),
+        ];
+      }
+      const panel = this.dom.panel;
+      panel.replaceChildren(...children.filter(Boolean));
+      panel.dataset.kind = kind;
+      panel.hidden = false;
+      primary.focus({ preventScroll: true });
+    },
+
+    hidePanel() {
+      this.dom.panel.hidden = true;
+      this.dom.panel.replaceChildren();
+    },
+
+    announce(text) { if (this.dom) this.dom.status.textContent = text; },
+
+    /* -------------------------------- input ------------------------------ */
+    normalizeKey(event) { return event.key.length === 1 ? event.key.toLowerCase() : event.key; },
+    actionFor(key) { return Object.keys(ARCADE_KEYS).find((name) => ARCADE_KEYS[name].includes(key)) || null; },
+    held(action) { return ARCADE_KEYS[action].some((key) => this.input.keys.has(key)); },
+
+    onKeyDown(event) {
+      if (event.ctrlKey || event.metaKey || event.altKey) return;   // never block browser shortcuts
+      const key = this.normalizeKey(event);
+      if (key === 'Escape') { event.preventDefault(); this.close(); return; }
+      if (key === 'Tab') { this.trapFocus(event); return; }
+      const action = this.actionFor(key);
+      if (this.mode !== 'playing') {
+        if (event.repeat) return;
+        if (action === 'pause' && this.mode === 'paused') { event.preventDefault(); this.resume(); }
+        else if (action === 'sound') this.toggleSound();
+        return;
+      }
+      if (!event.repeat) this.trackKonami(key);
+      if (!action) return;
+      event.preventDefault();                                        // no page scrolling / button presses while flying
+      if (event.repeat) return;
+      this.input.keys.add(key);
+      if (action === 'merge') this.merge();
+      else if (action === 'pause') this.pause();
+      else if (action === 'sound') this.toggleSound();
+    },
+
+    onKeyUp(event) {
+      if (!this.input) return;
+      this.input.keys.delete(this.normalizeKey(event));
+    },
+
+    trackKonami(key) {
+      const seq = KONAMI_SEQUENCE;
+      const input = this.input;
+      input.konami = key === seq[input.konami] ? input.konami + 1 : key === seq[0] ? 1 : 0;
+      if (input.konami === seq.length) {
+        input.konami = 0;
+        this.grantLoadout();
+      }
+    },
+
+    onPointerDown(event) {
+      if (this.mode !== 'playing') return;
+      event.preventDefault();
+      try { this.dom.canvas.setPointerCapture(event.pointerId); } catch (error) { /* synthetic or already-released pointer */ }
+      const p = this.world.player;
+      this.input.pointer = { id: event.pointerId, startX: event.clientX, startY: event.clientY, lastX: event.clientX, lastY: event.clientY, shipX: p.x, shipY: p.y, targetX: p.x, targetY: p.y };
+    },
+    onPointerMove(event) {
+      const ptr = this.input && this.input.pointer;
+      if (!ptr || event.pointerId !== ptr.id) return;
+      const gain = ARCADE_CONFIG.player.dragGain / this.view.scale;
+      ptr.lastX = event.clientX; ptr.lastY = event.clientY;
+      ptr.targetX = ptr.shipX + (event.clientX - ptr.startX) * gain;
+      ptr.targetY = ptr.shipY + (event.clientY - ptr.startY) * gain;
+    },
+    onPointerUp(event) {
+      const ptr = this.input && this.input.pointer;
+      if (ptr && event.pointerId === ptr.id) this.input.pointer = null;
+    },
+
+    releaseInput() {
+      if (!this.input) return;
+      this.input.keys.clear();
+      this.input.pointer = null;
+    },
+
+    onVisibilityChange() {
+      if (document.hidden) {
+        this.releaseInput();
+        if (this.mode === 'playing') this.pause();
+      }
+      this.lastTime = 0;
+    },
+
+    trapFocus(event) {
+      const focusables = Array.from(this.overlay.querySelectorAll('button')).filter((b) => !b.disabled && b.offsetParent !== null);
+      if (!focusables.length) { event.preventDefault(); return; }
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      const inside = this.overlay.contains(active) && active !== this.dom.stage;
+      if (event.shiftKey && (active === first || !inside)) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && (active === last || !inside)) { event.preventDefault(); first.focus(); }
+    },
+
+    /* --------------------------------- loop ------------------------------ */
+    loop(now) {
+      this.frame = requestAnimationFrame((t) => this.loop(t));
+      const elapsed = this.lastTime ? (now - this.lastTime) / 1000 : 0;
+      this.lastTime = now;
+      this.tick(clamp(elapsed, 0, ARCADE_CONFIG.maxFrameSec));
+    },
+
+    tick(dt) {
+      if (!this.world) return;
+      if (this.mode !== 'paused') { this.animTime += dt; this.updateBackground(dt); }
+      if (this.mode === 'playing') {
+        let left = dt;
+        while (left > 1e-6 && this.mode === 'playing') {
+          const step = Math.min(left, ARCADE_CONFIG.stepSec);
+          this.update(step);
+          left -= step;
+        }
+      }
+      this.render();
+      this.renderPowerBar();
+    },
+
+    /* -------------------------------- update ----------------------------- */
+    update(dt) {
+      const w = this.world;
+      w.time += dt;
+      this.updatePlayer(dt);
+      this.updateDirector(dt);
+      this.updateBullets(dt);
+      this.updateEnemies(dt);
+      this.updateBoss(dt);
+      this.updateCapsules(dt);
+      this.resolveCollisions();
+      this.updateEffects(dt);
+      if (w.pendingEnd) {
+        w.pendingEnd.timer -= dt;
+        if (w.pendingEnd.timer <= 0) this.finish(w.pendingEnd.result);
+      }
+    },
+
+    playerSpeed() {
+      const c = ARCADE_CONFIG.player;
+      return c.baseSpeed + this.world.power.speed * c.speedPerLevel;
+    },
+
+    optionPositions() {
+      const w = this.world;
+      const p = w.player;
+      const spacing = ARCADE_CONFIG.player.optionSpacing;
+      const out = [];
+      if (p.dead) return out;
+      for (let i = 0; i < w.power.options; i++) {
+        const sample = p.trail[Math.min((i + 1) * spacing, p.trail.length - 1)];
+        out.push(sample ? { x: sample.x, y: sample.y } : { x: p.x - 18 * (i + 1), y: p.y });
+      }
+      return out;
+    },
+
+    updatePlayer(dt) {
+      const w = this.world;
+      const p = w.player;
+      const { W, H } = this.view;
+      if (p.dead) {
+        p.respawn -= dt;
+        if (p.respawn <= 0 && !w.pendingEnd) this.respawn();
+        return;
+      }
+      p.invulnerable = Math.max(0, p.invulnerable - dt);
+      const speed = this.playerSpeed();
+      let dx = (this.held('right') ? 1 : 0) - (this.held('left') ? 1 : 0);
+      let dy = (this.held('down') ? 1 : 0) - (this.held('up') ? 1 : 0);
+      if (dx && dy) { dx *= Math.SQRT1_2; dy *= Math.SQRT1_2; }
+      let nx = p.x + dx * speed * dt;
+      let ny = p.y + dy * speed * dt;
+      const ptr = this.input.pointer;
+      if (ptr) {
+        const tx = clamp(ptr.targetX, 14, W - 20), ty = clamp(ptr.targetY, 14, H - 14);
+        const ddx = tx - p.x, ddy = ty - p.y;
+        const dist = Math.hypot(ddx, ddy);
+        const max = speed * 1.8 * dt;
+        if (dist > max) { nx = p.x + (ddx / dist) * max; ny = p.y + (ddy / dist) * max; } else { nx = tx; ny = ty; }
+      }
+      nx = clamp(nx, 14, W - 20);
+      ny = clamp(ny, 14, H - 14);
+      if (nx !== p.x || ny !== p.y) {
+        p.trail.unshift({ x: p.x, y: p.y });
+        const maxTrail = (ARCADE_CONFIG.powerUps.find((u) => u.id === 'option').max + 1) * ARCADE_CONFIG.player.optionSpacing + 1;
+        if (p.trail.length > maxTrail) p.trail.length = maxTrail;
+      }
+      p.x = nx; p.y = ny;
+
+      p.fireCooldown -= dt;
+      p.missileCooldown -= dt;
+      const firing = this.held('fire') || !!ptr;
+      if (!firing) return;
+      const shooters = [{ x: p.x, y: p.y }, ...this.optionPositions()];
+      if (p.fireCooldown <= 0) {
+        p.fireCooldown = ARCADE_CONFIG.player.fireCooldown;
+        shooters.forEach((s) => this.fireFrom(s));
+        this.sfx('shoot');
+      }
+      if (w.power.missile && p.missileCooldown <= 0) {
+        p.missileCooldown = ARCADE_CONFIG.player.missileCooldown;
+        shooters.forEach((s) => w.bullets.push({ kind: 'missile', x: s.x, y: s.y + 6, vx: 150, vy: 230, r: 4, dmg: 2 }));
+      }
+    },
+
+    fireFrom(s) {
+      const w = this.world;
+      if (w.power.laser) w.bullets.push({ kind: 'laser', x: s.x + 16, y: s.y, vx: 820, vy: 0, len: 8, maxLen: 112, dmg: 1, hits: new Set() });
+      else w.bullets.push({ kind: 'shot', x: s.x + 14, y: s.y, vx: 560, vy: 0, r: 3, dmg: 1 });
+      if (w.power.double) w.bullets.push({ kind: 'shot', diagonal: true, x: s.x + 8, y: s.y - 4, vx: 400, vy: -400, r: 3, dmg: 1 });
+    },
+
+    respawn() {
+      const w = this.world;
+      const p = w.player;
+      Object.assign(p, { dead: false, x: Math.min(80, this.view.W * 0.15), y: this.view.H / 2, invulnerable: ARCADE_CONFIG.player.invulnerableSec, trail: [] });
+      w.enemyBullets = [];
+      const ptr = this.input.pointer;
+      if (ptr) Object.assign(ptr, { startX: ptr.lastX, startY: ptr.lastY, shipX: p.x, shipY: p.y, targetX: p.x, targetY: p.y });
+    },
+
+    updateDirector(dt) {
+      const C = ARCADE_CONFIG;
+      const w = this.world;
+      if (w.bossState === 'none') {
+        w.stageTime += dt;
+        while (w.nextEvent < C.stage.length && C.stage[w.nextEvent].at <= w.stageTime) this.spawnWave(C.stage[w.nextEvent++]);
+        if (w.stageTime >= C.bossWarningAt) {
+          w.bossState = 'warning';
+          w.bossTimer = C.bossWarningSec;
+          this.banner('⚠ WARNING ⚠', 'LEGACY CODE APPROACHING', C.bossWarningSec, '#f87171');
+        }
+      } else if (w.bossState === 'warning') {
+        w.bossTimer -= dt;
+        if (w.bossTimer <= 0) this.spawnBoss();
+      }
+    },
+
+    makeEnemy(kind, props) {
+      const w = this.world;
+      return { id: w.nextId++, kind, age: 0, hitFlash: 0, ...ARCADE_CONFIG.enemies[kind], ...props };
+    },
+
+    spawnWave(event) {
+      const w = this.world;
+      const { W, H } = this.view;
+      const y = clamp((event.y || 0.5) * H, 40, H - 40);
+      if (event.wave === 'bugs') {
+        for (let i = 0; i < event.count; i++) {
+          w.enemies.push(this.makeEnemy('bug', { x: W + 20 + i * 34, y, baseY: y, phase: i * 0.55, amp: Math.min(60, H * 0.14), carrier: !!event.carrier && i === Math.floor(event.count / 2) }));
+        }
+      } else if (event.wave === 'drones') {
+        const formation = `f${w.nextId}`;
+        w.formations[formation] = { total: event.count, killed: 0 };
+        for (let i = 0; i < event.count; i++) w.enemies.push(this.makeEnemy('npe', { x: W + 40, y, y0: y, delay: i * 0.28, formation }));
+      } else if (event.wave === 'agents') {
+        for (let i = 0; i < event.count; i++) {
+          const top = i % 2 === 0;
+          w.enemies.push(this.makeEnemy('smith', { x: W + 30 + i * 110, y: top ? 24 : H - 24, top, fireT: 1 + i * 0.4 }));
+        }
+      } else if (event.wave === 'merge') {
+        w.enemies.push(this.makeEnemy('merge', { x: W + 40, y, baseY: y, fireT: 1.6 }));
+      }
+    },
+
+    aimedShot(x, y, speed, offset = 0) {
+      const p = this.world.player;
+      const angle = Math.atan2(p.y - y, p.x - x) + offset;
+      this.world.enemyBullets.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, r: 3.5 });
+    },
+
+    updateEnemies(dt) {
+      const w = this.world;
+      const { W, H } = this.view;
+      const p = w.player;
+      for (const e of w.enemies) {
+        e.age += dt;
+        e.hitFlash = Math.max(0, e.hitFlash - dt);
+        if (e.kind === 'bug') {
+          e.x -= 125 * dt;
+          e.y = e.baseY + Math.sin(e.age * 3 + e.phase) * e.amp;
+        } else if (e.kind === 'npe') {
+          const t = e.age - e.delay;
+          e.x = W + 40 - 180 * Math.max(0, t);
+          e.y = e.y0 + Math.sin(Math.max(0, t) * 2.4) * Math.min(70, H * 0.18);
+        } else if (e.kind === 'smith') {
+          e.x -= 70 * dt;
+          e.y = e.top ? 24 : H - 24;
+          e.fireT -= dt;
+          if (e.fireT <= 0 && e.x < W - 20 && e.x > 30 && !p.dead) { e.fireT = 1.9; this.aimedShot(e.x, e.y, 150); }
+        } else if (e.kind === 'merge') {
+          e.x -= 48 * dt;
+          e.y = e.baseY + Math.sin(e.age * 1.3) * 12;
+          e.fireT -= dt;
+          if (e.fireT <= 0 && e.x < W - 30 && !p.dead) {
+            e.fireT = 2.4;
+            for (const vy of [-60, 0, 60]) w.enemyBullets.push({ x: e.x - 28, y: e.y, vx: -150, vy, r: 3.5 });
+          }
+        }
+        if (e.x < -60) e.gone = true;
+      }
+    },
+
+    spawnBoss() {
+      const C = ARCADE_CONFIG.boss;
+      const w = this.world;
+      const { W, H } = this.view;
+      w.boss = {
+        x: W + C.width, y: H / 2, w: C.width, h: Math.min(200, H * 0.62), t: 0,
+        hp: C.coreHp, maxHp: C.coreHp, barriers: Array(C.barriers).fill(C.barrierHp),
+        phase: 'enter', fireT: 2, spreadT: 3.5, spawnT: 5, hitFlash: 0, dying: 0, boomT: 0,
+      };
+      w.bossState = 'fight';
+      this.banner(C.name, C.subtitle, 2.6, '#fca5a5');
+    },
+
+    updateBoss(dt) {
+      const w = this.world;
+      const b = w.boss;
+      if (!b) return;
+      const { W, H } = this.view;
+      b.t += dt;
+      b.hitFlash = Math.max(0, b.hitFlash - dt);
+      const targetX = W - b.w / 2 - 30;
+      if (b.phase === 'enter') {
+        b.x = Math.max(targetX, b.x - 70 * dt);
+        if (b.x <= targetX) b.phase = 'fight';
+        return;
+      }
+      if (b.phase === 'dying') {
+        b.dying -= dt;
+        b.boomT -= dt;
+        if (b.boomT <= 0) {
+          b.boomT = 0.12;
+          this.explode(b.x + (Math.random() - 0.5) * b.w, b.y + (Math.random() - 0.5) * b.h, Math.random() < 0.5 ? '#4ade80' : '#fbbf24', 14);
+          w.shake = Math.max(w.shake, 0.3);
+        }
+        if (b.dying <= 0) {
+          this.explode(b.x, b.y, '#ecfeff', 60);
+          w.flash = 1;
+          w.boss = null;
+          w.bossState = 'dead';
+          if (!w.pendingEnd) w.pendingEnd = { result: 'win', timer: 1 };
+        }
+        return;
+      }
+      b.x = targetX;
+      const range = Math.max(0, H / 2 - b.h / 2 - 16);
+      b.y = H / 2 + Math.sin(b.t * 0.7) * range;
+      const rage = b.hp < b.maxHp / 2 ? 1.5 : 1;
+      const left = b.x - b.w / 2;
+      b.fireT -= dt * rage;
+      if (b.fireT <= 0) {
+        b.fireT = 1.4;
+        for (const y of [b.y, b.y - b.h / 2 + 14, b.y + b.h / 2 - 14]) w.enemyBullets.push({ x: left, y, vx: -300, vy: 0, r: 3.5, long: true });
+      }
+      b.spreadT -= dt * rage;
+      if (b.spreadT <= 0 && !w.player.dead) {
+        b.spreadT = 3.2;
+        for (const offset of [-0.3, -0.15, 0, 0.15, 0.3]) this.aimedShot(left + 30, b.y, 150, offset);
+      }
+      if (rage > 1) {
+        b.spawnT -= dt;
+        if (b.spawnT <= 0) {
+          b.spawnT = 5;
+          for (let i = 0; i < 3; i++) w.enemies.push(this.makeEnemy('bug', { x: left - 10 + i * 26, y: b.y, baseY: b.y, phase: i * 0.8, amp: Math.min(80, H * 0.2) }));
+        }
+      }
+    },
+
+    killBoss() {
+      const w = this.world;
+      const b = w.boss;
+      if (!b || b.phase === 'dying') return;
+      b.phase = 'dying';
+      b.dying = 2;
+      b.hp = 0;
+      w.score += ARCADE_CONFIG.scores.boss;
+      w.enemyBullets = [];
+      this.popText(b.x - b.w / 2, b.y - 30, `+${formatInt(ARCADE_CONFIG.scores.boss)} · DECOMPOSED`, '#fde68a');
+      this.sfx('boom');
+    },
+
+    updateBullets(dt) {
+      const w = this.world;
+      const { W, H } = this.view;
+      for (const b of w.bullets) {
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
+        if (b.kind === 'laser') b.len = Math.min(b.maxLen, b.len + b.vx * dt);
+        if (b.kind === 'missile' && b.y >= H - 8) { b.y = H - 8; b.vy = 0; b.vx = 320; }
+        if (b.x - (b.len || 0) > W + 20 || b.y < -20 || b.y > H + 20) b.gone = true;
+      }
+      for (const b of w.enemyBullets) {
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
+        if (b.x < -20 || b.x > W + 40 || b.y < -20 || b.y > H + 20) b.gone = true;
+      }
+    },
+
+    makeCapsule(x, y) { return { x, y, vx: -50, t: 0, r: 10 }; },
+
+    updateCapsules(dt) {
+      for (const c of this.world.capsules) {
+        c.t += dt;
+        c.x += c.vx * dt;
+        c.y += Math.sin(c.t * 3) * 10 * dt;
+        if (c.x < -20) c.gone = true;
+      }
+    },
+
+    /* ------------------------------ collisions --------------------------- */
+    bulletHitsEnemy(b, e) {
+      if (e.x > this.view.W + e.r) return false;   // still waiting off-screen
+      if (b.kind === 'laser') return e.x + e.r >= b.x - b.len && e.x - e.r <= b.x && Math.abs(e.y - b.y) <= e.r + 2;
+      const r = e.r + b.r;
+      return (e.x - b.x) ** 2 + (e.y - b.y) ** 2 <= r * r;
+    },
+
+    /** Returns true when the boss absorbed the bullet. Only the exposed core takes real damage. */
+    bulletHitsBoss(b) {
+      const w = this.world;
+      const boss = w.boss;
+      if (!boss || boss.phase === 'dying') return false;
+      const left = boss.x - boss.w / 2;
+      const top = boss.y - boss.h / 2;
+      if (b.x < left - 2 || b.x > boss.x + boss.w / 2 || b.y < top || b.y > top + boss.h) return false;
+      if (Math.abs(b.y - boss.y) < 15) {
+        const index = boss.barriers.findIndex((hp) => hp > 0);
+        if (index >= 0) {
+          if (b.x < left + 4 + index * 6 - 4) return false;
+          boss.barriers[index] = Math.max(0, boss.barriers[index] - b.dmg);
+          this.spark(b.x, b.y, '#fbbf24');
+          if (boss.barriers[index] === 0) {
+            w.score += ARCADE_CONFIG.scores.barrier;
+            this.popText(left, boss.y - 20, boss.barriers.every((hp) => hp === 0) ? 'CORE EXPOSED' : '-1 layer of abstraction', '#fde68a');
+            this.sfx('hit');
+          }
+          return true;
+        }
+        if (b.x < left + 20) return false;
+        boss.hp -= b.dmg;
+        boss.hitFlash = 0.08;
+        this.spark(b.x, b.y, '#f87171');
+        if (boss.hp <= 0) this.killBoss();
+        return true;
+      }
+      this.spark(b.x, b.y, '#86efac');
+      return true;
+    },
+
+    resolveCollisions() {
+      const w = this.world;
+      const p = w.player;
+      const pr = ARCADE_CONFIG.player.radius;
+      for (const b of w.bullets) {
+        if (b.gone) continue;
+        if (this.bulletHitsBoss(b)) { b.gone = true; continue; }
+        for (const e of w.enemies) {
+          if (e.gone || !this.bulletHitsEnemy(b, e)) continue;
+          if (b.kind === 'laser') {
+            if (b.hits.has(e.id)) continue;
+            b.hits.add(e.id);
+          } else {
+            b.gone = true;
+          }
+          this.damageEnemy(e, b.dmg);
+          if (b.gone) break;
+        }
+      }
+      if (!p.dead) {
+        for (const c of w.capsules) {
+          if (!c.gone && (c.x - p.x) ** 2 + (c.y - p.y) ** 2 <= (c.r + 10) ** 2) { c.gone = true; this.collectCapsule(c); }
+        }
+        for (const b of w.enemyBullets) {
+          if (!b.gone && (b.x - p.x) ** 2 + (b.y - p.y) ** 2 <= (b.r + pr) ** 2 && this.hitPlayer()) b.gone = true;
+        }
+        for (const e of w.enemies) {
+          if (e.gone || p.dead) continue;
+          const r = e.r * 0.75 + pr;
+          if ((e.x - p.x) ** 2 + (e.y - p.y) ** 2 <= r * r && this.hitPlayer()) this.damageEnemy(e, 2);
+        }
+        const boss = w.boss;
+        if (boss && boss.phase !== 'dying' && !p.dead
+          && p.x + pr > boss.x - boss.w / 2 && p.x - pr < boss.x + boss.w / 2
+          && p.y + pr > boss.y - boss.h / 2 && p.y - pr < boss.y + boss.h / 2) this.hitPlayer();
+      }
+      const alive = (item) => !item.gone;
+      w.bullets = w.bullets.filter(alive);
+      w.enemyBullets = w.enemyBullets.filter(alive);
+      w.enemies = w.enemies.filter(alive);
+      w.capsules = w.capsules.filter(alive);
+    },
+
+    damageEnemy(e, dmg) {
+      if (e.gone) return;
+      e.hp -= dmg;
+      e.hitFlash = 0.08;
+      if (e.hp <= 0) this.killEnemy(e);
+    },
+
+    killEnemy(e) {
+      const w = this.world;
+      e.gone = true;
+      w.score += e.score;
+      const colors = { bug: '#f87171', npe: '#c084fc', smith: '#4ade80', merge: '#fbbf24' };
+      this.explode(e.x, e.y, colors[e.kind], e.kind === 'merge' ? 30 : 14);
+      this.sfx('boom');
+      const quips = { merge: 'resolved ✓', smith: 'Mr. Anderson…?' };
+      this.popText(e.x, e.y - 14, quips[e.kind] || `+${e.score}`, '#bbf7d0');
+      let drop = e.carrier || e.kind === 'merge' || (e.kind === 'smith' && this.random() < ARCADE_CONFIG.smithCapsuleChance);
+      if (e.formation && w.formations[e.formation]) {
+        const f = w.formations[e.formation];
+        f.killed += 1;
+        if (f.killed === f.total) { drop = true; this.popText(e.x, e.y + 14, 'formation cleared', '#f0abfc'); }
+      }
+      if (drop) w.capsules.push(this.makeCapsule(e.x, e.y));
+    },
+
+    hitPlayer() {
+      const w = this.world;
+      const p = w.player;
+      if (p.dead || p.invulnerable > 0 || this.debug.invulnerable || (w.pendingEnd && w.pendingEnd.result === 'win')) return false;
+      if (w.power.shield > 0) {
+        w.power.shield -= 1;
+        p.invulnerable = 0.6;
+        this.spark(p.x + 14, p.y, '#22d3ee');
+        this.popText(p.x, p.y - 22, 'catch (e) { }', '#67e8f9');
+        this.sfx('hit');
+        return true;
+      }
+      this.killPlayer();
+      return true;
+    },
+
+    killPlayer() {
+      const w = this.world;
+      const p = w.player;
+      if (p.dead) return;
+      p.dead = true;
+      p.respawn = ARCADE_CONFIG.player.respawnSec;
+      this.explode(p.x, p.y, '#22d3ee', 40);
+      this.sfx('boom');
+      w.shake = 0.6;
+      w.lives -= 1;
+      if (w.power.options > 0) this.popText(p.x, p.y - 26, 'pair programmer went to lunch', '#fde68a');
+      w.power.options = 0;
+      w.power.shield = 0;
+      if (w.lives <= 0 && !w.pendingEnd) w.pendingEnd = { result: 'gameover', timer: 1.8 };
+    },
+
+    /* ------------------------------ power-ups ---------------------------- */
+    collectCapsule(capsule) {
+      const w = this.world;
+      w.powerIndex = (w.powerIndex + 1) % ARCADE_CONFIG.powerUps.length;
+      w.score += ARCADE_CONFIG.scores.capsule;
+      this.popText(capsule.x, capsule.y - 12, `PR → ${ARCADE_CONFIG.powerUps[w.powerIndex].name}`, '#fcd34d');
+      this.sfx('capsule');
+    },
+
+    powerLevel(id) {
+      const pw = this.world.power;
+      return { speed: pw.speed, missile: +pw.missile, double: +pw.double, laser: +pw.laser, option: pw.options, shield: pw.shield }[id];
+    },
+
+    isMaxed(id) {
+      const slot = ARCADE_CONFIG.powerUps.find((p) => p.id === id);
+      return this.powerLevel(id) >= slot.max;
+    },
+
+    /** Buys the highlighted upgrade. Returns true when something was applied. */
+    merge() {
+      const w = this.world;
+      if (this.mode !== 'playing' || !w || w.powerIndex < 0 || w.player.dead) { this.sfx('deny'); return false; }
+      const slot = ARCADE_CONFIG.powerUps[w.powerIndex];
+      if (this.isMaxed(slot.id)) { this.sfx('deny'); this.popText(w.player.x, w.player.y - 22, `${slot.name}: already merged`, '#94a3b8'); return false; }
+      const pw = w.power;
+      if (slot.id === 'speed') pw.speed += 1;
+      else if (slot.id === 'missile') pw.missile = true;
+      else if (slot.id === 'double') { pw.double = true; pw.laser = false; }
+      else if (slot.id === 'laser') { pw.laser = true; pw.double = false; }
+      else if (slot.id === 'option') pw.options += 1;
+      else if (slot.id === 'shield') pw.shield = ARCADE_CONFIG.player.shieldHits;
+      w.powerIndex = -1;
+      this.popText(w.player.x, w.player.y - 22, `git merge ${slot.name.toLowerCase().replace(/[^a-z]+/g, '-')}`, '#67e8f9');
+      this.announce(`Merged ${slot.name}.`);
+      this.sfx('power');
+      this.renderPowerBar();
+      return true;
+    },
+
+    /** The classic cheat, once per game: a full loadout. */
+    grantLoadout() {
+      const w = this.world;
+      if (w.konamiGrants > 0) { this.banner('NICE TRY', 'cheat codes are single-use, like prod credentials', 2, '#94a3b8'); return; }
+      w.konamiGrants += 1;
+      const max = (id) => ARCADE_CONFIG.powerUps.find((p) => p.id === id).max;
+      Object.assign(w.power, { speed: Math.max(w.power.speed, 2), missile: true, double: false, laser: true, options: max('option'), shield: ARCADE_CONFIG.player.shieldHits });
+      w.powerIndex = -1;
+      w.flash = 0.6;
+      this.banner('↑↑↓↓←→←→BA', 'FULL LOADOUT · git push --force-with-respect', 2.6, '#fcd34d');
+      this.announce('Konami code: full loadout granted.');
+      this.sfx('power');
+      this.renderPowerBar();
+    },
+
+    /* ------------------------------- effects ----------------------------- */
+    explode(x, y, color, count) {
+      const w = this.world;
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 40 + Math.random() * 170;
+        const life = 0.4 + Math.random() * 0.6;
+        w.particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life, max: life, color, char: Math.random() < 0.5 ? '0' : '1', size: 8 + Math.random() * 5 });
+      }
+      if (w.particles.length > 450) w.particles.splice(0, w.particles.length - 450);
+    },
+    spark(x, y, color) {
+      const w = this.world;
+      for (let i = 0; i < 4; i++) {
+        const angle = Math.PI * 0.6 + Math.random() * Math.PI * 0.8;
+        w.particles.push({ x, y, vx: Math.cos(angle) * 120, vy: Math.sin(angle) * 120, life: 0.18, max: 0.18, color, char: null, size: 2 });
+      }
+    },
+    popText(x, y, text, color) {
+      const texts = this.world.texts;
+      const px = clamp(x, 70, this.view.W - 70);
+      let py = y;
+      // Stack instead of overlapping when several messages pop at the same spot.
+      while (texts.some((t) => Math.abs(t.x - px) < 90 && Math.abs(t.y - py) < 11)) py -= 12;
+      texts.push({ x: px, y: py, text, color, life: 1.1 });
+      if (texts.length > 12) texts.shift();
+    },
+    banner(title, subtitle, seconds, color) {
+      this.world.banner = { title, subtitle, life: seconds, max: seconds, color };
+    },
+
+    updateEffects(dt) {
+      const w = this.world;
+      for (const p of w.particles) { p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= 0.98; p.vy *= 0.98; p.life -= dt; }
+      w.particles = w.particles.filter((p) => p.life > 0);
+      for (const t of w.texts) { t.y -= 24 * dt; t.life -= dt; }
+      w.texts = w.texts.filter((t) => t.life > 0);
+      if (w.banner) { w.banner.life -= dt; if (w.banner.life <= 0) w.banner = null; }
+      w.shake = Math.max(0, w.shake - dt);
+      w.flash = Math.max(0, w.flash - dt * 2.5);
+    },
+
+    /* ------------------------------ background --------------------------- */
+    createBackground() {
+      const { W, H } = this.view;
+      const glyphs = ARCADE_CONFIG.glyphs;
+      const pick = () => glyphs[Math.floor(Math.random() * glyphs.length)];
+      const columns = [];
+      for (const layer of [{ size: 11, gap: 18, depth: 0.35, alpha: 0.18 }, { size: 15, gap: 32, depth: 0.8, alpha: 0.32 }]) {
+        const count = Math.ceil(W / layer.gap) + 2;
+        for (let i = 0; i < count; i++) {
+          columns.push({
+            ...layer, span: count * layer.gap, x: i * layer.gap + Math.random() * layer.gap * 0.5,
+            y: Math.random() * H * 1.4 - H * 0.2, speed: (40 + Math.random() * 90) * (0.6 + layer.depth),
+            length: 5 + Math.floor(Math.random() * 12), chars: Array.from({ length: 24 }, pick),
+          });
+        }
+      }
+      const stars = Array.from({ length: Math.round((W * H) / 3500) }, () => ({
+        x: Math.random() * W, y: Math.random() * H, layer: Math.floor(Math.random() * 3), char: Math.random() < 0.65 ? null : pick(),
+      }));
+      return { columns, stars, mutateT: 0, pick };
+    },
+
+    updateBackground(dt) {
+      const bg = this.bg;
+      if (!bg) return;
+      const { W, H } = this.view;
+      const reduced = Motion.reduced;
+      const fall = reduced ? 0.05 : 1;
+      const scroll = ARCADE_CONFIG.scrollSpeed * (reduced ? 0.1 : 1);
+      for (const c of bg.columns) {
+        c.y += c.speed * fall * dt;
+        c.x -= scroll * c.depth * dt;
+        if (c.x < -c.gap) c.x += c.span;
+        if (c.y - c.length * c.size > H) { c.y = -Math.random() * H * 0.3; c.speed = (40 + Math.random() * 90) * (0.6 + c.depth); }
+      }
+      bg.mutateT -= dt;
+      if (bg.mutateT <= 0 && !reduced) {
+        bg.mutateT = 0.06;
+        for (let i = 0; i < 10; i++) {
+          const c = bg.columns[Math.floor(Math.random() * bg.columns.length)];
+          c.chars[Math.floor(Math.random() * c.chars.length)] = bg.pick();
+        }
+      }
+      for (const s of bg.stars) {
+        s.x -= scroll * (0.5 + s.layer * 0.9) * dt;
+        if (s.x < -10) { s.x += W + 20; s.y = Math.random() * H; }
+      }
+    },
+
+    /* -------------------------------- render ----------------------------- */
+    render() {
+      const ctx = this.ctx;
+      if (!ctx || !this.world) return;
+      const v = this.view;
+      const w = this.world;
+      ctx.setTransform(v.dpr * v.scale, 0, 0, v.dpr * v.scale, 0, 0);
+      this.drawBackground(ctx);
+      ctx.save();
+      if (w.shake > 0 && !Motion.reduced) ctx.translate((Math.random() - 0.5) * w.shake * 10, (Math.random() - 0.5) * w.shake * 10);
+      if (this.mode === 'title') this.drawShip(ctx, v.W * 0.16, v.H / 2 + Math.sin(this.animTime * 2) * 10, this.animTime);
+      else this.drawWorld(ctx);
+      ctx.restore();
+      if (this.mode !== 'title') this.drawHud(ctx);
+      if (this.mode === 'paused' || this.mode === 'gameover' || this.mode === 'win') {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(0, 0, v.W, v.H);
+      }
+      if (w.flash > 0 && !Motion.reduced) {
+        ctx.fillStyle = `rgba(236, 254, 255, ${w.flash * 0.5})`;
+        ctx.fillRect(0, 0, v.W, v.H);
+      }
+    },
+
+    drawBackground(ctx) {
+      const { W, H } = this.view;
+      const font = ARCADE_CONFIG.font;
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, W, H);
+      const bg = this.bg;
+      if (!bg) return;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (const s of bg.stars) {
+        ctx.globalAlpha = 0.2 + s.layer * 0.15;
+        ctx.fillStyle = s.layer === 2 ? '#22d3ee' : s.layer === 1 ? '#a855f7' : '#4ade80';
+        if (s.char) { ctx.font = `${8 + s.layer * 2}px ${font}`; ctx.fillText(s.char, s.x, s.y); } else ctx.fillRect(s.x, s.y, 1 + s.layer * 0.6, 1 + s.layer * 0.6);
+      }
+      let size = 0;
+      for (const c of bg.columns) {
+        if (c.size !== size) { size = c.size; ctx.font = `${size}px ${font}`; }
+        for (let k = 0; k < c.length; k++) {
+          const gy = c.y - k * c.size;
+          if (gy < -c.size || gy > H + c.size) continue;
+          if (k === 0) { ctx.globalAlpha = Math.min(1, c.alpha + 0.3); ctx.fillStyle = '#bbf7d0'; } else { ctx.globalAlpha = c.alpha * (1 - k / c.length); ctx.fillStyle = '#22c55e'; }
+          const n = c.chars.length;
+          ctx.fillText(c.chars[(((k + Math.floor(c.y / c.size)) % n) + n) % n], c.x, gy);
+        }
+      }
+      ctx.globalAlpha = 1;
+      const fade = ctx.createLinearGradient(0, 0, 0, H);
+      fade.addColorStop(0, 'rgba(0, 0, 0, 0.55)');
+      fade.addColorStop(0.18, 'rgba(0, 0, 0, 0)');
+      fade.addColorStop(0.85, 'rgba(0, 0, 0, 0)');
+      fade.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
+      ctx.fillStyle = fade;
+      ctx.fillRect(0, 0, W, H);
+    },
+
+    drawWorld(ctx) {
+      const w = this.world;
+      const t = this.animTime;
+      for (const c of w.capsules) this.drawCapsule(ctx, c, t);
+      for (const e of w.enemies) {
+        if (e.x > this.view.W + 40) continue;
+        if (e.kind === 'bug') this.drawBug(ctx, e, t);
+        else if (e.kind === 'npe') this.drawDrone(ctx, e, t);
+        else if (e.kind === 'smith') this.drawAgent(ctx, e);
+        else this.drawMergeBlock(ctx, e);
+      }
+      if (w.boss) this.drawBoss(ctx, w.boss, t);
+      this.drawPlayerBullets(ctx);
+      const p = w.player;
+      if (!p.dead) {
+        for (const o of this.optionPositions()) this.drawOption(ctx, o.x, o.y, t);
+        const blink = p.invulnerable > 0 && Math.floor(t * 14) % 2 === 0;
+        this.drawShip(ctx, p.x, p.y, t, blink ? 0.35 : 1);
+        if (w.power.shield > 0) this.drawShield(ctx, p.x, p.y, w.power.shield, t);
+      }
+      for (const b of w.enemyBullets) {
+        ctx.fillStyle = 'rgba(248, 113, 113, 0.35)';
+        if (b.long) ctx.fillRect(b.x - 4, b.y - 3, 16, 6); else { ctx.beginPath(); ctx.arc(b.x, b.y, b.r + 2.5, 0, Math.PI * 2); ctx.fill(); }
+        ctx.fillStyle = '#fecaca';
+        if (b.long) ctx.fillRect(b.x - 2, b.y - 1.5, 12, 3); else { ctx.beginPath(); ctx.arc(b.x, b.y, b.r - 1, 0, Math.PI * 2); ctx.fill(); }
+      }
+      const font = ARCADE_CONFIG.font;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (const q of w.particles) {
+        ctx.globalAlpha = Math.max(0, q.life / q.max);
+        ctx.fillStyle = q.color;
+        if (q.char) { ctx.font = `bold ${q.size}px ${font}`; ctx.fillText(q.char, q.x, q.y); } else ctx.fillRect(q.x - 1, q.y - 1, q.size, q.size);
+      }
+      ctx.font = `bold 10px ${font}`;
+      for (const text of w.texts) {
+        ctx.globalAlpha = Math.min(1, text.life * 2);
+        ctx.fillStyle = text.color;
+        ctx.fillText(text.text, text.x, text.y);
+      }
+      ctx.globalAlpha = 1;
+    },
+
+    drawPlayerBullets(ctx) {
+      ctx.lineCap = 'round';
+      for (const b of this.world.bullets) {
+        if (b.kind === 'laser') {
+          ctx.strokeStyle = 'rgba(34, 211, 238, 0.35)'; ctx.lineWidth = 6;
+          ctx.beginPath(); ctx.moveTo(b.x - b.len, b.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          ctx.strokeStyle = '#ecfeff'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(b.x - b.len, b.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        } else if (b.kind === 'missile') {
+          ctx.fillStyle = 'rgba(168, 85, 247, 0.45)';
+          ctx.fillRect(b.x - 12, b.y - 1.5, 10, 3);
+          ctx.fillStyle = '#e9d5ff';
+          ctx.beginPath(); ctx.moveTo(b.x + 5, b.y); ctx.lineTo(b.x - 3, b.y - 3.5); ctx.lineTo(b.x - 3, b.y + 3.5); ctx.closePath(); ctx.fill();
+        } else {
+          const len = 9 / Math.hypot(b.vx, b.vy);
+          ctx.strokeStyle = 'rgba(34, 211, 238, 0.4)'; ctx.lineWidth = 5;
+          ctx.beginPath(); ctx.moveTo(b.x - b.vx * len, b.y - b.vy * len); ctx.lineTo(b.x, b.y); ctx.stroke();
+          ctx.strokeStyle = '#cffafe'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(b.x - b.vx * len, b.y - b.vy * len); ctx.lineTo(b.x, b.y); ctx.stroke();
+        }
+      }
+    },
+
+    /** The player ship: "the Cursor" — a neon arrow with a blinking-caret exhaust. */
+    drawShip(ctx, x, y, t, alpha = 1, scale = 1) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
+      ctx.globalAlpha = alpha;
+      const flame = 6 + Math.sin(t * 38) * 2.5;
+      ctx.fillStyle = 'rgba(168, 85, 247, 0.85)';
+      ctx.beginPath(); ctx.moveTo(-10, -3.5); ctx.lineTo(-10 - flame, 0); ctx.lineTo(-10, 3.5); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = 'rgba(103, 232, 249, 0.95)';
+      ctx.fillRect(-13 - flame * 0.3, -1.2, flame * 0.55, 2.4);
+      ctx.fillStyle = '#6d28d9';
+      ctx.beginPath(); ctx.moveTo(-1, -3); ctx.lineTo(-12, -13); ctx.lineTo(-6, -13); ctx.lineTo(5, -3); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-1, 3); ctx.lineTo(-12, 13); ctx.lineTo(-6, 13); ctx.lineTo(5, 3); ctx.closePath(); ctx.fill();
+      const hull = ctx.createLinearGradient(-12, 0, 18, 0);
+      hull.addColorStop(0, '#a855f7');
+      hull.addColorStop(1, '#22d3ee');
+      ctx.fillStyle = hull;
+      ctx.beginPath(); ctx.moveTo(19, 0); ctx.lineTo(3, -6.5); ctx.lineTo(-11, -5); ctx.lineTo(-8, 0); ctx.lineTo(-11, 5); ctx.lineTo(3, 6.5); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = 'rgba(236, 254, 255, 0.7)'; ctx.lineWidth = 0.8;
+      ctx.beginPath(); ctx.moveTo(19, 0); ctx.lineTo(3, -6.5); ctx.stroke();
+      if (Math.floor(t * 2.5) % 2 === 0) { ctx.fillStyle = '#ecfeff'; ctx.fillRect(2, -2, 5, 4); }
+      ctx.fillStyle = '#0c4a6e';
+      ctx.fillRect(-2, -1, 3, 2);
+      ctx.restore();
+    },
+
+    /** "Pair Programmer": an amber helper drone that trails the ship and copies its shots. */
+    drawOption(ctx, x, y, t) {
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.22)';
+      ctx.beginPath(); ctx.arc(x, y, 10 + Math.sin(t * 8) * 1.5, 0, Math.PI * 2); ctx.fill();
+      const g = ctx.createRadialGradient(x - 2, y - 2, 1, x, y, 6.5);
+      g.addColorStop(0, '#fffbeb'); g.addColorStop(0.5, '#fbbf24'); g.addColorStop(1, '#b45309');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fde68a';
+      ctx.beginPath(); ctx.arc(x + Math.cos(t * 6) * 10, y + Math.sin(t * 6) * 10, 1.6, 0, Math.PI * 2); ctx.fill();
+    },
+
+    /** "Try/Catch": braces around the ship that absorb hits. */
+    drawShield(ctx, x, y, hits, t) {
+      const alpha = 0.35 + 0.2 * hits + Math.sin(t * 6) * 0.08;
+      ctx.strokeStyle = `rgba(34, 211, 238, ${alpha * 0.6})`;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(x + 2, y, 21, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = `rgba(103, 232, 249, ${Math.min(1, alpha + 0.2)})`;
+      ctx.font = `bold 26px ${ARCADE_CONFIG.font}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('{', x - 20, y);
+      ctx.fillText('}', x + 24, y);
+    },
+
+    drawCapsule(ctx, c, t) {
+      const { x, y } = c;
+      if (Math.floor(t * 6) % 2 === 0) {
+        ctx.strokeStyle = 'rgba(251, 191, 36, 0.6)'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI * 2); ctx.stroke();
+      }
+      const g = ctx.createLinearGradient(x, y - 7, x, y + 7);
+      g.addColorStop(0, '#fde68a'); g.addColorStop(1, '#f59e0b');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(x - 5, y, 7, Math.PI / 2, Math.PI * 1.5);
+      ctx.arc(x + 5, y, 7, -Math.PI / 2, Math.PI / 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#1a1205';
+      ctx.font = `bold 9px ${ARCADE_CONFIG.font}`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('PR', x, y + 0.5);
+    },
+
+    drawBug(ctx, e, t) {
+      const { x, y } = e;
+      const wiggle = Math.sin(t * 18 + e.id) * 2;
+      ctx.strokeStyle = e.carrier ? '#fde68a' : '#fca5a5';
+      ctx.lineWidth = 1.4;
+      for (const side of [-1, 1]) {
+        for (let i = -1; i <= 1; i++) {
+          ctx.beginPath(); ctx.moveTo(x + i * 5, y + side * 4); ctx.lineTo(x + i * 5 + (i === 0 ? wiggle : -wiggle), y + side * 11); ctx.stroke();
+        }
+        ctx.beginPath(); ctx.moveTo(x - 9, y + side * 2); ctx.lineTo(x - 15, y + side * 8); ctx.stroke();
+      }
+      ctx.fillStyle = e.hitFlash > 0 ? '#ffffff' : e.carrier ? '#f59e0b' : '#ef4444';
+      ctx.beginPath(); ctx.ellipse(x + 2, y, 9, 6.5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = e.carrier ? '#78350f' : '#7f1d1d';
+      ctx.beginPath(); ctx.arc(x - 8, y, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.55)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x - 4, y); ctx.lineTo(x + 11, y); ctx.stroke();
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      for (const [dx, dy] of [[1, -3], [6, 3], [5, -3], [1, 3]]) { ctx.beginPath(); ctx.arc(x + dx, y + dy, 1.3, 0, Math.PI * 2); ctx.fill(); }
+      if (e.carrier) {
+        ctx.strokeStyle = `rgba(251, 191, 36, ${0.4 + Math.sin(t * 8) * 0.3})`; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(x, y, 16, 0, Math.PI * 2); ctx.stroke();
+      }
+    },
+
+    drawDrone(ctx, e, t) {
+      const { x, y } = e;
+      ctx.strokeStyle = '#c084fc'; ctx.lineWidth = 1.2;
+      const spin = t * 30;
+      for (const side of [-1, 1]) {
+        ctx.beginPath(); ctx.moveTo(x + side * 4, y - 11); ctx.lineTo(x + side * 4, y - 14); ctx.stroke();
+        const span = Math.abs(Math.cos(spin + side)) * 7 + 1;
+        ctx.beginPath(); ctx.moveTo(x + side * 4 - span, y - 14); ctx.lineTo(x + side * 4 + span, y - 14); ctx.stroke();
+      }
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const a = Math.PI / 6 + (i * Math.PI) / 3;
+        const px = x + Math.cos(a) * 12, py = y + Math.sin(a) * 12;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fillStyle = e.hitFlash > 0 ? '#ffffff' : '#2e1065';
+      ctx.fill();
+      ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = '#f0abfc';
+      ctx.font = `bold 8px ${ARCADE_CONFIG.font}`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('NPE', x, y + 0.5);
+    },
+
+    /** Sunglasses agent in a black suit, posted on the ceiling or the floor. */
+    drawAgent(ctx, e) {
+      const { x, y } = e;
+      ctx.fillStyle = '#0f2a18';
+      ctx.fillRect(x - 13, e.top ? y - 24 : y + 13, 26, 11);
+      ctx.fillStyle = e.hitFlash > 0 ? '#ffffff' : '#050705';
+      ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x - 11, y + 13); ctx.lineTo(x - 7, y + 2); ctx.lineTo(x + 7, y + 2); ctx.lineTo(x + 11, y + 13); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#f1f5f9';
+      ctx.beginPath(); ctx.moveTo(x - 3, y + 2); ctx.lineTo(x, y + 8); ctx.lineTo(x + 3, y + 2); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = '#111827'; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(x, y + 3); ctx.lineTo(x, y + 10); ctx.stroke();
+      ctx.fillStyle = '#e7e5e4';
+      ctx.beginPath(); ctx.ellipse(x, y - 5, 6, 7.5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#1c1917';
+      ctx.beginPath(); ctx.ellipse(x, y - 11, 6, 2.6, 0, Math.PI, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#000';
+      ctx.fillRect(x - 6.5, y - 7, 5.5, 3.4);
+      ctx.fillRect(x + 1, y - 7, 5.5, 3.4);
+      ctx.fillRect(x - 1.5, y - 6.4, 3, 1);
+      ctx.fillStyle = '#4ade80';
+      ctx.fillRect(x - 5.5, y - 6.6, 1.6, 0.9);
+      ctx.fillRect(x + 2, y - 6.6, 1.6, 0.9);
+      ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 0.8;
+      ctx.beginPath(); ctx.moveTo(x + 6, y - 4); ctx.quadraticCurveTo(x + 8, y, x + 5, y + 3); ctx.stroke();
+    },
+
+    drawMergeBlock(ctx, e) {
+      const { x, y } = e;
+      ctx.fillStyle = e.hitFlash > 0 ? '#fef3c7' : '#140909';
+      ctx.fillRect(x - 31, y - 23, 62, 46);
+      ctx.fillStyle = 'rgba(248, 113, 113, 0.2)'; ctx.fillRect(x - 31, y - 23, 62, 20);
+      ctx.fillStyle = 'rgba(74, 222, 128, 0.2)'; ctx.fillRect(x - 31, y + 3, 62, 20);
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 1.5;
+      ctx.strokeRect(x - 31, y - 23, 62, 46);
+      ctx.font = `bold 8px ${ARCADE_CONFIG.font}`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#fca5a5'; ctx.fillText('<<<<<<< HEAD', x, y - 13);
+      ctx.fillStyle = '#e2e8f0'; ctx.fillText('=======', x, y);
+      ctx.fillStyle = '#86efac'; ctx.fillText('>>>>>>> main', x, y + 13);
+      if (e.hp <= 4) {
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)'; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(x - 10, y - 23); ctx.lineTo(x - 4, y - 8); ctx.lineTo(x - 12, y + 4); ctx.lineTo(x - 6, y + 23); ctx.stroke();
+      }
+    },
+
+    drawBoss(ctx, b, t) {
+      const font = ARCADE_CONFIG.font;
+      const left = b.x - b.w / 2, right = b.x + b.w / 2, top = b.y - b.h / 2, bottom = b.y + b.h / 2;
+      const slab = ctx.createLinearGradient(left, 0, right, 0);
+      slab.addColorStop(0, '#123821'); slab.addColorStop(1, '#03110a');
+      ctx.fillStyle = slab;
+      ctx.beginPath();
+      ctx.moveTo(left + 20, top); ctx.lineTo(right, top); ctx.lineTo(right, bottom); ctx.lineTo(left + 20, bottom);
+      ctx.lineTo(left, b.y + 22); ctx.lineTo(left, b.y - 22); ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = b.phase === 'dying' && Math.floor(t * 12) % 2 ? '#fbbf24' : '#4ade80';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      for (const ty of [top + 8, bottom - 8]) {
+        ctx.fillStyle = '#0b2415'; ctx.fillRect(left + 4, ty - 6, 22, 12);
+        ctx.fillStyle = '#4ade80'; ctx.fillRect(left - 6, ty - 2, 12, 4);
+      }
+      ctx.save();
+      ctx.beginPath(); ctx.rect(left + 22, top + 2, b.w - 24, b.h - 4); ctx.clip();
+      ctx.font = `9px ${font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      const lines = ['LEGACY', 'est. 1998', 'GOTO 10', 'COBOL.EXE', '// TODO', 'DO NOT', 'TOUCH', 'v0.0.1-final', 'WORKS ON', 'MY MAINFRAME'];
+      const rows = Math.floor((b.h - 44) / 13);
+      for (let i = 0; i < rows; i++) {
+        const ry = top + 12 + i * 13 + (i >= rows / 2 ? 34 : 0);
+        if (ry > bottom - 6) break;
+        ctx.fillStyle = `rgba(74, 222, 128, ${0.35 + 0.25 * Math.sin(t * 2 + i)})`;
+        ctx.fillText(lines[i % lines.length], left + 40, ry);
+      }
+      ctx.restore();
+      // Friendly reviewer shades on the monolith's face.
+      ctx.fillStyle = '#000';
+      ctx.fillRect(right - 46, top + 14, 15, 7); ctx.fillRect(right - 28, top + 14, 15, 7); ctx.fillRect(right - 31, top + 16, 3, 2);
+      ctx.fillStyle = '#4ade80'; ctx.fillRect(right - 44, top + 15, 4, 1.5); ctx.fillRect(right - 26, top + 15, 4, 1.5);
+      // Channel, barriers ("layers of abstraction") and the core.
+      ctx.fillStyle = '#000';
+      ctx.fillRect(left, b.y - 15, 38, 30);
+      b.barriers.forEach((hp, i) => {
+        if (hp <= 0) return;
+        ctx.fillStyle = ['#fde68a', '#fbbf24', '#f59e0b', '#d97706'][Math.min(3, ARCADE_CONFIG.boss.barrierHp - hp)];
+        ctx.fillRect(left + 2 + i * 6, b.y - 13, 4, 26);
+      });
+      const pulse = 0.5 + 0.5 * Math.sin(t * 6);
+      const exposed = b.barriers.every((hp) => hp <= 0);
+      const core = ctx.createRadialGradient(left + 30, b.y, 1, left + 30, b.y, 12 + pulse * 2);
+      core.addColorStop(0, '#fff7ed');
+      core.addColorStop(0.45, b.hitFlash > 0 ? '#ffffff' : exposed ? '#f87171' : '#22d3ee');
+      core.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = core;
+      ctx.beginPath(); ctx.arc(left + 30, b.y, 12 + pulse * 2, 0, Math.PI * 2); ctx.fill();
+    },
+
+    drawHud(ctx) {
+      const w = this.world;
+      const { W, H } = this.view;
+      const font = ARCADE_CONFIG.font;
+      ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      ctx.font = `bold 13px ${font}`;
+      ctx.fillStyle = '#4ade80';
+      ctx.fillText(`SCORE ${String(w.score).padStart(7, '0')}`, 10, 8);
+      ctx.font = `10px ${font}`;
+      ctx.fillStyle = 'rgba(134, 239, 172, 0.75)';
+      ctx.fillText(`HI ${String(Math.max(this.highScore, w.score)).padStart(7, '0')}`, 10, 25);
+      for (let i = 0; i < Math.max(0, w.lives); i++) this.drawShip(ctx, W - 20 - i * 22, 15, 0, 0.9, 0.55);
+      ctx.textAlign = 'center';
+      const barW = Math.min(220, W * 0.4);
+      if (w.boss) {
+        const b = w.boss;
+        ctx.font = `bold 10px ${font}`; ctx.fillStyle = '#fca5a5';
+        ctx.fillText(ARCADE_CONFIG.boss.name, W / 2, 6);
+        ctx.fillStyle = 'rgba(248, 113, 113, 0.2)'; ctx.fillRect(W / 2 - barW / 2, 20, barW, 6);
+        const g = ctx.createLinearGradient(W / 2 - barW / 2, 0, W / 2 + barW / 2, 0);
+        g.addColorStop(0, '#f87171'); g.addColorStop(1, '#fbbf24');
+        ctx.fillStyle = g; ctx.fillRect(W / 2 - barW / 2, 20, barW * clamp(b.hp / b.maxHp, 0, 1), 6);
+        ctx.strokeStyle = 'rgba(254, 202, 202, 0.6)'; ctx.lineWidth = 1; ctx.strokeRect(W / 2 - barW / 2, 20, barW, 6);
+        b.barriers.forEach((hp, i) => { ctx.fillStyle = hp > 0 ? '#fbbf24' : 'rgba(251, 191, 36, 0.2)'; ctx.fillRect(W / 2 - barW / 2 + i * 9, 30, 6, 4); });
+      } else if (w.bossState === 'none') {
+        const progress = clamp(w.stageTime / ARCADE_CONFIG.bossWarningAt, 0, 1);
+        ctx.font = `9px ${font}`; ctx.fillStyle = 'rgba(134, 239, 172, 0.7)';
+        ctx.fillText('STAGE 1 · /dev/null valley', W / 2, 7);
+        ctx.fillStyle = 'rgba(74, 222, 128, 0.18)'; ctx.fillRect(W / 2 - barW / 4, 20, barW / 2, 3);
+        ctx.fillStyle = '#4ade80'; ctx.fillRect(W / 2 - barW / 4, 20, (barW / 2) * progress, 3);
+      }
+      const banner = w.banner;
+      if (banner) {
+        const fade = Math.min(1, banner.life * 2, (banner.max - banner.life) * 5);
+        ctx.globalAlpha = clamp(fade, 0, 1);
+        ctx.textBaseline = 'middle';
+        ctx.font = `900 ${Math.min(30, W / 16)}px ${font}`;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+        ctx.fillRect(0, H * 0.38 - 26, W, 54);
+        ctx.fillStyle = banner.color;
+        ctx.fillText(banner.title, W / 2, H * 0.38 - 4);
+        ctx.font = `11px ${font}`; ctx.fillStyle = '#e2e8f0';
+        ctx.fillText(banner.subtitle, W / 2, H * 0.38 + 17);
+        ctx.globalAlpha = 1;
+      }
+    },
+
+    renderPowerBar() {
+      const w = this.world;
+      if (!w || !this.dom) return;
+      const pw = w.power;
+      const key = [w.powerIndex, pw.speed, pw.missile, pw.double, pw.laser, pw.options, pw.shield].join('|');
+      if (key === this.powerBarKey) return;
+      this.powerBarKey = key;
+      ARCADE_CONFIG.powerUps.forEach((slot, i) => {
+        const node = this.dom.slots[i];
+        const level = this.powerLevel(slot.id);
+        const maxed = this.isMaxed(slot.id);
+        node.classList.toggle('is-lit', i === w.powerIndex);
+        node.classList.toggle('is-owned', level > 0);
+        node.classList.toggle('is-maxed', maxed && i !== w.powerIndex);
+        if (i === w.powerIndex) node.setAttribute('aria-current', 'true'); else node.removeAttribute('aria-current');
+        node.lastChild.textContent = maxed ? 'max ✓' : slot.max > 1 && level > 0 ? `${slot.effect} ${level}/${slot.max}` : slot.effect;
+      });
+      this.dom.mergeBtn.classList.toggle('is-ready', w.powerIndex >= 0);
+    },
+
+    /* -------------------------------- sound ------------------------------ */
+    toggleSound() {
+      const s = this.sound;
+      s.on = !s.on;
+      if (s.on && !s.ctx) {
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          s.ctx = AudioCtx ? new AudioCtx() : null;
+        } catch (error) { s.ctx = null; }
+      }
+      if (s.on && s.ctx && s.ctx.state === 'suspended') s.ctx.resume().catch(() => {});
+      if (this.dom) {
+        this.dom.soundBtn.textContent = s.on ? '♪ on' : '♪ off';
+        this.dom.soundBtn.setAttribute('aria-pressed', String(s.on));
+      }
+    },
+    sfx(name) {
+      const s = this.sound;
+      const preset = ARCADE_CONFIG.sfx[name];
+      if (!s.on || !s.ctx || !preset) return;
+      try {
+        const t0 = s.ctx.currentTime;
+        const osc = s.ctx.createOscillator();
+        const gain = s.ctx.createGain();
+        osc.type = preset.type;
+        osc.frequency.setValueAtTime(preset.from, t0);
+        osc.frequency.exponentialRampToValueAtTime(preset.to, t0 + preset.dur);
+        gain.gain.setValueAtTime(preset.vol, t0);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + preset.dur);
+        osc.connect(gain).connect(s.ctx.destination);
+        osc.start(t0);
+        osc.stop(t0 + preset.dur + 0.02);
+      } catch (error) { /* audio is optional */ }
+    },
+    stopSound() {
+      const ctx = this.sound.ctx;
+      if (ctx) {
+        try { const closing = ctx.close(); if (closing && closing.catch) closing.catch(() => {}); } catch (error) { /* already closed */ }
+      }
+      this.sound = { ctx: null, on: false };
+    },
+
+    /* ------------------------- test & debug helpers ---------------------- */
+    snapshot() {
+      const w = this.world;
+      if (!this.overlay || !w) return { open: false, mode: this.mode };
+      const count = (kind, extra = () => true) => w.bullets.filter((b) => b.kind === kind && extra(b)).length;
+      return {
+        open: true, mode: this.mode, score: w.score, lives: w.lives, highScore: this.highScore,
+        stageTime: w.stageTime, view: { W: this.view.W, H: this.view.H },
+        player: { x: w.player.x, y: w.player.y, dead: w.player.dead, invulnerable: w.player.invulnerable },
+        power: { ...w.power }, powerIndex: w.powerIndex,
+        litSlot: w.powerIndex >= 0 ? ARCADE_CONFIG.powerUps[w.powerIndex].id : null,
+        bullets: { total: w.bullets.length, shot: count('shot', (b) => !b.diagonal), diagonal: count('shot', (b) => b.diagonal), laser: count('laser'), missile: count('missile') },
+        options: this.optionPositions().length,
+        enemyBullets: w.enemyBullets.length,
+        enemies: w.enemies.map((e) => e.kind),
+        capsules: w.capsules.length,
+        boss: w.boss ? { hp: w.boss.hp, maxHp: w.boss.maxHp, barriers: w.boss.barriers.slice(), phase: w.boss.phase } : null,
+        bossState: w.bossState,
+        konamiGrants: w.konamiGrants,
+        reducedMotion: Motion.reduced,
+      };
+    },
+    resources() { return { open: this.isOpen, frame: this.frame !== null, listeners: this.listeners.length, audio: this.sound.ctx !== null }; },
+    debugStep(seconds) {
+      const steps = Math.round(clamp(seconds, 0, 120) / ARCADE_CONFIG.stepSec);
+      for (let i = 0; i < steps && this.world; i++) this.tick(ARCADE_CONFIG.stepSec);
+    },
+    debugSpawnCapsule(at = {}) {
+      if (!this.world) return;
+      const p = this.world.player;
+      this.world.capsules.push(this.makeCapsule(at.x == null ? p.x : at.x, at.y == null ? p.y : at.y));
+    },
+    debugSkipToBoss() {
+      const w = this.world;
+      if (!w) return;
+      w.stageTime = ARCADE_CONFIG.bossWarningAt;
+      w.nextEvent = ARCADE_CONFIG.stage.length;
+      w.enemies = [];
+      w.enemyBullets = [];
+    },
+    debugDamageBoss(amount) {
+      const b = this.world && this.world.boss;
+      if (!b) return;
+      b.barriers.fill(0);
+      b.hp -= amount;
+      if (b.hp <= 0) this.killBoss();
+    },
+    debugKillPlayer() { if (this.world) this.killPlayer(); },
+    debugSetScore(score) { if (this.world) this.world.score = Math.max(0, Math.floor(score)); },
+  };
+
+  /* =====================================================================
+     12. LEVEL CONTROLLERS
      ===================================================================== */
   class TypingLevel {
     constructor(game, level) {
@@ -1907,7 +3533,7 @@ html[data-motion="reduced"] #particles { display: none; }
   }
 
   /* =====================================================================
-     12. GAME CONTROLLER — state, flow, rendering of screens.
+     13. GAME CONTROLLER — state, flow, rendering of screens.
      ===================================================================== */
   const testHooks = window.__CTO_TEST_HOOKS__ && typeof window.__CTO_TEST_HOOKS__ === 'object' ? window.__CTO_TEST_HOOKS__ : null;
 
@@ -1919,6 +3545,7 @@ html[data-motion="reduced"] #particles { display: none; }
     returnScreen: 'intro',
     leaderboardTab: 'local',
     sharedStandings: null,
+    sessionAchievements: [],
 
     hud: {
       setTimer(secondsLeft, fraction) {
@@ -2004,6 +3631,17 @@ html[data-motion="reduced"] #particles { display: none; }
     unlock(id) {
       if (!this.state || this.state.achievements.includes(id) || !ACHIEVEMENTS[id]) return;
       this.state.achievements.push(id);
+      this.announceAchievement(id);
+    },
+
+    /** For achievements earned outside a benchmark run (the secret arcade). Kept for this page session only. */
+    unlockOutsideRun(id) {
+      if (!ACHIEVEMENTS[id] || this.sessionAchievements.includes(id)) return;
+      this.sessionAchievements.push(id);
+      this.announceAchievement(id);
+    },
+
+    announceAchievement(id) {
       const a = ACHIEVEMENTS[id];
       Toasts.show({ icon: a.icon, title: `Achievement: ${a.title}`, text: a.description });
     },
@@ -2276,9 +3914,11 @@ html[data-motion="reduced"] #particles { display: none; }
 
     /* ---------------------------- easter eggs ------------------------ */
     initEasterEggs() {
-      const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+      const konami = KONAMI_SEQUENCE;
       let position = 0;
       document.addEventListener('keydown', (event) => {
+        // The secret arcade owns the keyboard (including its own Konami code) while it is open.
+        if (SecretArcade.isOpen) { position = 0; return; }
         if (event.key === 'Escape') { Modal.close(); Matrix.close(); return; }
         if (event.ctrlKey || event.metaKey || event.altKey) return;
         const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
@@ -2333,8 +3973,16 @@ html[data-motion="reduced"] #particles { display: none; }
 
       $('#nickname-form').addEventListener('submit', (event) => {
         event.preventDefault();
-        const nickname = sanitizeNickname($('#nickname').value);
         const error = $('#nickname-error');
+        // Checked before sanitizing: the trigger phrase is 21 characters, one more than a real nickname
+        // may have. It opens the secret arcade, never starts a run and never reaches the leaderboard.
+        if (isSecretArcadeNickname($('#nickname').value)) {
+          error.textContent = '';
+          $('#nickname').removeAttribute('aria-invalid');
+          SecretArcade.open({ returnFocus: $('#nickname') });
+          return;
+        }
+        const nickname = sanitizeNickname($('#nickname').value);
         if (!nickname) {
           error.textContent = 'Invalid nickname. Use 1–20 letters, numbers, spaces, _ . - \' ( ). Even juniors can do that.';
           $('#nickname').setAttribute('aria-invalid', 'true');
@@ -2372,7 +4020,7 @@ html[data-motion="reduced"] #particles { display: none; }
   };
 
   /* =====================================================================
-     13. TEST HOOKS — only attached when a test harness pre-defines
+     14. TEST HOOKS — only attached when a test harness pre-defines
      window.__CTO_TEST_HOOKS__ before the page loads. Never in normal play.
      ===================================================================== */
   if (testHooks) {
@@ -2384,6 +4032,21 @@ html[data-motion="reduced"] #particles { display: none; }
       currentPassage: () => (Game.currentLevel instanceof TypingLevel ? Game.currentLevel.passage : null),
       submitScore: () => Game.submitScore(),
       standings: () => LeaderboardService.standings(),
+      isSecretArcadeNickname,
+      sessionAchievements: () => Game.sessionAchievements.slice(),
+      arcade: {
+        isOpen: () => SecretArcade.isOpen,
+        getState: () => SecretArcade.snapshot(),
+        resources: () => SecretArcade.resources(),
+        start: () => SecretArcade.startGame(),
+        step: (seconds) => SecretArcade.debugStep(seconds),
+        spawnCapsule: (at) => SecretArcade.debugSpawnCapsule(at),
+        skipToBoss: () => SecretArcade.debugSkipToBoss(),
+        damageBoss: (amount) => SecretArcade.debugDamageBoss(amount),
+        killPlayer: () => SecretArcade.debugKillPlayer(),
+        setScore: (score) => SecretArcade.debugSetScore(score),
+        setInvulnerable: (on) => { SecretArcade.debug.invulnerable = !!on; },
+      },
     };
   }
 

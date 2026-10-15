@@ -925,3 +925,304 @@ test('22. no remote dependencies are needed for gameplay', async ({ page, baseUR
   expect(INDEX_HTML).not.toMatch(/innerHTML|outerHTML|insertAdjacentHTML|document\.write/);
   expect(INDEX_HTML).not.toMatch(/https?:\/\/(?!www\.w3\.org)/);
 });
+
+/* ------------------------------------------------------------------ */
+/* 23. Secret arcade: "GRADIENT DESCENT"                               */
+/* ------------------------------------------------------------------ */
+
+const ARCADE_NICKNAME = '  rIcHaRd IsT dEr BeStE ';
+const KONAMI_KEYS = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+const arcadeState = (page) => api(page, (a) => a.arcade.getState());
+
+async function submitNickname(page, nickname) {
+  await page.fill('#nickname', nickname);
+  await page.click('#start-btn');
+}
+
+/** Opens the arcade under a paused fake clock, so the game only advances via clock.runFor. */
+async function openArcadeWithFakeClock(page, { start = true } = {}) {
+  await page.clock.install({ time: CLOCK_START });
+  await openGame(page);
+  await page.clock.pauseAt(new Date(CLOCK_START.getTime() + 5000));
+  await submitNickname(page, ARCADE_NICKNAME);
+  await expect(page.locator('#arcade-overlay')).toBeVisible();
+  if (start) {
+    await page.click('#arcade-start');
+    await expect(page.locator('#arcade-panel')).toBeHidden();
+    expect((await arcadeState(page)).mode).toBe('playing');
+  }
+}
+
+test('23a. the secret nickname opens the arcade instead of the benchmark', async ({ page }) => {
+  const errors = await prepare(page);
+  await openGame(page);
+  expect(await api(page, (a) => a.isSecretArcadeNickname('Richard ist der Beste'))).toBe(true);
+  await submitNickname(page, ARCADE_NICKNAME);
+  const overlay = page.locator('#arcade-overlay');
+  await expect(overlay).toBeVisible();
+  await expect(overlay).toHaveAttribute('role', 'dialog');
+  await expect(overlay).toHaveAttribute('aria-modal', 'true');
+  await expect(page.locator('#arcade-title')).toHaveText('GRADIENT DESCENT');
+  await expect(page.locator('#arcade-exit')).toBeVisible();
+  await expect(page.locator('#arcade-start')).toBeFocused();
+  await expect(page.locator('.arcade-slot')).toHaveCount(6);
+  // No benchmark: no level screen, no run state, no error message.
+  await expect(page.locator('#screen-level')).toBeHidden();
+  expect(await api(page, (a) => a.getState())).toBeNull();
+  await expect(page.locator('#nickname-error')).toHaveText('');
+  expect(await api(page, (a) => a.arcade.isOpen())).toBe(true);
+  expect(await api(page, (a) => a.sessionAchievements())).toContain('architectOfTheMatrix');
+  await page.click('#arcade-start');
+  await page.waitForTimeout(400);
+  expect((await arcadeState(page)).mode).toBe('playing');
+  await page.waitForLoadState('networkidle');
+  expect(errors).toEqual([]);
+});
+
+test('23b. ordinary and near-miss nicknames do not open the arcade', async ({ page }) => {
+  await prepare(page);
+  for (const nickname of ['Alice', 'Richard', 'Richard ist der Best', 'Richard ist der Bester']) {
+    await openGame(page);
+    await submitNickname(page, nickname);
+    if (nickname.length > 20) {
+      await expect(page.locator('#nickname-error')).toContainText('Invalid nickname');
+    } else {
+      await expect(page.locator('#screen-level')).toBeVisible();
+      expect((await api(page, (a) => a.getState())).nickname).toBe(nickname);
+    }
+    await expect(page.locator('#arcade-overlay')).toHaveCount(0);
+    expect(await api(page, (a) => a.arcade.isOpen())).toBe(false);
+  }
+});
+
+test('23c. moving, shooting and pausing change the arcade state (fake clock)', async ({ page }) => {
+  const errors = await prepare(page);
+  await openArcadeWithFakeClock(page);
+  await api(page, (a) => a.arcade.setInvulnerable(true));
+  const before = await arcadeState(page);
+
+  await page.keyboard.down('ArrowRight');
+  await page.keyboard.down('ArrowDown');
+  await page.clock.runFor(500);
+  await page.keyboard.up('ArrowRight');
+  await page.keyboard.up('ArrowDown');
+  const moved = await arcadeState(page);
+  expect(moved.player.x).toBeGreaterThan(before.player.x + 30);
+  expect(moved.player.y).toBeGreaterThan(before.player.y + 30);
+
+  await page.keyboard.down('Space');
+  await page.clock.runFor(400);
+  await page.keyboard.up('Space');
+  const firing = await arcadeState(page);
+  expect(firing.bullets.shot).toBeGreaterThan(1);
+
+  await page.keyboard.press('p');
+  await expect(page.locator('#arcade-resume')).toBeVisible();
+  const paused = await arcadeState(page);
+  expect(paused.mode).toBe('paused');
+  await page.clock.runFor(1000);
+  expect((await arcadeState(page)).stageTime).toBe(paused.stageTime);
+  await page.keyboard.press('p');
+  await page.clock.runFor(500);
+  const resumed = await arcadeState(page);
+  expect(resumed.mode).toBe('playing');
+  expect(resumed.stageTime).toBeGreaterThan(paused.stageTime);
+
+  // Hiding the tab pauses automatically.
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  expect((await arcadeState(page)).mode).toBe('paused');
+  expect(errors).toEqual([]);
+});
+
+test('23d. PR capsules move the merge bar and merging applies real upgrades', async ({ page }) => {
+  await prepare(page);
+  await openArcadeWithFakeClock(page);
+  await api(page, (a) => a.arcade.setInvulnerable(true));
+  const collect = async (count) => {
+    for (let i = 0; i < count; i++) {
+      await api(page, (a) => a.arcade.spawnCapsule());
+      await page.clock.runFor(50);
+    }
+  };
+
+  await collect(1);
+  let s = await arcadeState(page);
+  expect(s.powerIndex).toBe(0);
+  expect(s.litSlot).toBe('speed');
+  await expect(page.locator('.arcade-slot.is-lit')).toContainText('Overclock');
+  await page.keyboard.press('Shift');
+  s = await arcadeState(page);
+  expect(s.power.speed).toBe(1);
+  expect(s.powerIndex).toBe(-1);
+  await expect(page.locator('.arcade-slot.is-lit')).toHaveCount(0);
+
+  // Overclock really is faster: same input, longer distance.
+  const y0 = s.player.y;
+  await page.keyboard.down('ArrowUp');
+  await page.clock.runFor(300);
+  await page.keyboard.up('ArrowUp');
+  const distance = y0 - (await arcadeState(page)).player.y;
+  expect(distance).toBeGreaterThan(150 * 0.3 + 5);
+
+  // Three capsules -> Fork (double shot), merged with K.
+  await collect(3);
+  expect((await arcadeState(page)).litSlot).toBe('double');
+  await page.keyboard.press('k');
+  await page.keyboard.down('Space');
+  await page.clock.runFor(300);
+  await page.keyboard.up('Space');
+  s = await arcadeState(page);
+  expect(s.power.double).toBe(true);
+  expect(s.bullets.diagonal).toBeGreaterThan(0);
+
+  // Five capsules -> Pair Programmer: a drone that copies the shots.
+  await collect(5);
+  expect((await arcadeState(page)).litSlot).toBe('option');
+  await page.keyboard.press('Shift');
+  s = await arcadeState(page);
+  expect(s.power.options).toBe(1);
+  expect(s.options).toBe(1);
+
+  // Merging resets the highlight; six capsules reach Try/Catch, the shield that absorbs hits.
+  await collect(6);
+  expect((await arcadeState(page)).litSlot).toBe('shield');
+  await page.keyboard.press('Shift');
+  expect((await arcadeState(page)).power.shield).toBe(3);
+});
+
+test('23e. the in-game Konami code grants one loadout; the Matrix egg still works outside', async ({ page }) => {
+  const errors = await prepare(page);
+  await openArcadeWithFakeClock(page);
+  for (const key of KONAMI_KEYS) await page.keyboard.press(key);
+  let s = await arcadeState(page);
+  expect(s.konamiGrants).toBe(1);
+  expect(s.power).toEqual({ speed: 2, missile: true, double: false, laser: true, options: 2, shield: 3 });
+  // The main-page Matrix egg does not fire while the arcade is open.
+  await expect(page.locator('#matrix-overlay')).toHaveCount(0);
+  await page.keyboard.down('Space');
+  await page.clock.runFor(1000);
+  await page.keyboard.up('Space');
+  s = await arcadeState(page);
+  expect(s.bullets.laser).toBeGreaterThan(0);
+  expect(s.bullets.missile).toBeGreaterThan(0);
+
+  // Once per game.
+  for (const key of KONAMI_KEYS) await page.keyboard.press(key);
+  expect((await arcadeState(page)).konamiGrants).toBe(1);
+  await expect(page.locator('#matrix-overlay')).toHaveCount(0);
+
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#arcade-overlay')).toHaveCount(0);
+  await page.evaluate(() => document.activeElement && document.activeElement.blur());
+  for (const key of KONAMI_KEYS) await page.keyboard.press(key);
+  await expect(page.locator('#matrix-overlay')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#matrix-overlay')).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
+test('23f. Escape and Exit close the arcade cleanly and the benchmark still starts', async ({ page }) => {
+  const errors = await prepare(page);
+  await openGame(page);
+  await submitNickname(page, ARCADE_NICKNAME);
+  await page.click('#arcade-start');
+  expect(await api(page, (a) => a.arcade.resources())).toEqual({ open: true, frame: true, listeners: 9, audio: false });
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#arcade-overlay')).toHaveCount(0);
+  await expect(page.locator('#nickname')).toBeFocused();
+  expect(await api(page, (a) => a.arcade.resources())).toEqual({ open: false, frame: false, listeners: 0, audio: false });
+  await expect(page.locator('body')).not.toHaveClass(/arcade-open/);
+
+  await page.click('#start-btn');
+  await expect(page.locator('#arcade-overlay')).toBeVisible();
+  await page.click('#arcade-sound');
+  await expect(page.locator('#arcade-sound')).toHaveAttribute('aria-pressed', 'true');
+  await page.click('#arcade-exit');
+  await expect(page.locator('#arcade-overlay')).toHaveCount(0);
+  await expect(page.locator('#nickname')).toBeFocused();
+  expect(await api(page, (a) => a.arcade.resources())).toEqual({ open: false, frame: false, listeners: 0, audio: false });
+
+  await startGame(page, 'Alice');
+  await expect(page.locator('#hud-title')).toHaveText('Keyboard Calibration');
+  expect((await api(page, (a) => a.getState())).nickname).toBe('Alice');
+  expect(errors).toEqual([]);
+});
+
+test('23g. game over, high score, boss fight and win screen (fake clock)', async ({ page }) => {
+  await prepare(page);
+  await openArcadeWithFakeClock(page);
+  await api(page, (a) => a.arcade.setScore(4321));
+  for (let life = 0; life < 3; life++) {
+    await api(page, (a) => a.arcade.killPlayer());
+    await page.clock.runFor(2000);
+  }
+  await expect(page.locator('#arcade-panel')).toContainText('GAME OVER');
+  await expect(page.locator('#arcade-final-score')).toHaveText('4,321');
+  await expect(page.locator('#arcade-play-again')).toBeFocused();
+  expect(await page.evaluate(() => localStorage.getItem('ctoexe.arcade.highscore.v1'))).toBe('4321');
+
+  await page.click('#arcade-play-again');
+  let s = await arcadeState(page);
+  expect(s).toMatchObject({ mode: 'playing', score: 0, lives: 3, highScore: 4321 });
+
+  await api(page, (a) => { a.arcade.setInvulnerable(true); a.arcade.skipToBoss(); });
+  await page.clock.runFor(8000);
+  s = await arcadeState(page);
+  expect(s.bossState).toBe('fight');
+  expect(s.boss).toMatchObject({ hp: 40, maxHp: 40, barriers: [4, 4, 4, 4] });
+  await api(page, (a) => a.arcade.damageBoss(999));
+  await page.clock.runFor(4000);
+  await expect(page.locator('#arcade-panel')).toContainText('MONOLITH DECOMPOSED');
+  s = await arcadeState(page);
+  expect(s.mode).toBe('win');
+  expect(s.score).toBeGreaterThanOrEqual(5000 + 3 * 1000);
+  expect(await api(page, (a) => a.sessionAchievements())).toContain('monolithDecomposer');
+  await page.click('#arcade-panel-exit');
+  await expect(page.locator('#arcade-overlay')).toHaveCount(0);
+  // Nothing reached the benchmark leaderboard.
+  expect(await page.evaluate(() => localStorage.getItem('ctoexe.leaderboard.v1'))).toBeNull();
+});
+
+test('23h. arcade fits a 360px phone, shows touch controls on mobile and honours reduced motion', async ({ page }, testInfo) => {
+  const errors = await prepare(page);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 360, height: 740 });
+  await openArcadeWithFakeClock(page);
+  await expectNoHorizontalOverflow(page, 'arcade');
+  const overlayOverflow = await page.locator('#arcade-overlay').evaluate((n) => n.scrollWidth - n.clientWidth);
+  expect(overlayOverflow).toBeLessThanOrEqual(0);
+  await expect(page.locator('#arcade-exit')).toBeVisible();
+  const box = await page.locator('#arcade-overlay').boundingBox();
+  expect(box.width).toBeLessThanOrEqual(360);
+  expect((await arcadeState(page)).reducedMotion).toBe(true);
+
+  if (testInfo.project.name === 'mobile-chromium') {
+    await expect(page.locator('.arcade-touch')).toBeVisible();
+    await expect(page.locator('#arcade-merge')).toBeVisible();
+    // Drag to fly with auto-fire.
+    const canvas = page.locator('#arcade-canvas');
+    const area = await canvas.boundingBox();
+    const before = await arcadeState(page);
+    const at = (dx, dy) => ({ pointerId: 7, pointerType: 'touch', isPrimary: true, clientX: area.x + 60 + dx, clientY: area.y + 200 + dy });
+    await canvas.dispatchEvent('pointerdown', at(0, 0));
+    await canvas.dispatchEvent('pointermove', at(60, 40));
+    await page.clock.runFor(600);
+    const dragged = await arcadeState(page);
+    expect(dragged.player.x).toBeGreaterThan(before.player.x + 20);
+    expect(dragged.player.y).toBeGreaterThan(before.player.y + 20);
+    expect(dragged.bullets.shot).toBeGreaterThan(0);
+    await canvas.dispatchEvent('pointerup', at(60, 40));
+    // The touch Merge button buys the highlighted upgrade.
+    await api(page, (a) => a.arcade.spawnCapsule());
+    await page.clock.runFor(50);
+    await page.click('#arcade-merge');
+    expect((await arcadeState(page)).power.speed).toBe(1);
+  } else {
+    await expect(page.locator('.arcade-touch')).toBeHidden();
+  }
+  await expectNoHorizontalOverflow(page, 'arcade after play');
+  expect(errors).toEqual([]);
+});

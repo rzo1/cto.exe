@@ -44,6 +44,7 @@ Typing fields block paste and drop. Quiz answers can be chosen with keys `1`–`
 
 Easter eggs:
 - The Konami code (↑ ↑ ↓ ↓ ← → ← → B A) starts Matrix mode.
+- A certain nickname opens a secret arcade game (spoilers below).
 - Clicking the version label five times shows the release notes.
 - Finishing every level unlocks *Senior Stack Overflow Engineer*.
 
@@ -67,6 +68,22 @@ Interference happens only in the game's own typing `<input>`, through its `befor
 - Keystrokes are never rejected. WPM and accuracy are real. Only the competitive score is inflated.
 
 **Adding another victim or VIP:** add a key, in lower case, under `PLAYER_RULES.profiles`. Include only the fields you want to override.
+
+### The secret arcade: GRADIENT DESCENT
+
+Enter the nickname **`Richard ist der Beste`** and press *Start benchmark*. Case and surrounding spaces don't matter. The benchmark doesn't start. Instead, a full-screen secret arcade opens: **GRADIENT DESCENT, a Matrix-grade shoot-'em-up**. It's an original horizontal shooter, inspired by the classic power-up-bar shmups and set in front of Matrix digital rain. Nothing from it reaches the leaderboard, and leaving it puts you back on the intro screen.
+
+- **Controls:** arrows or WASD to fly, Space or J to fire (hold it down), Shift or K to merge an upgrade, P to pause, M for sound (off by default, WebAudio blips only), Esc or *Exit* to leave. On phones, drag anywhere to fly with auto-fire, and tap **⚡ Merge**. The game pauses itself when the tab is hidden.
+- **Power-ups:** defeated enemies drop **PR capsules**. Each capsule moves the highlight one slot along the merge bar, and merging buys the highlighted upgrade:
+  **Overclock** (speed, 4 levels) · **Async** (missiles that hug the floor) · **Fork** (double shot) · **Regex** (piercing laser; Fork and Regex are mutually exclusive) · **Pair Prog** (up to 2 trailing helper drones that copy your shots) · **Try/Catch** (shield that absorbs 3 hits). Losing a life sends your pair programmers to lunch and drops the shield.
+- **Enemies:** bug swarms in sine waves, *NullPointerException* drone formations (clearing a whole formation drops a capsule), sunglasses agents in suits posted on the ceiling and floor as turrets, and merge-conflict blocks.
+- **Boss:** **THE LEGACY MONOLITH** (code owner: Agent Daniel). Shoot away four "layers of abstraction" to expose its core. Beating it gives a life bonus and a friendly "LGTM. Ship it."
+- **Konami nod:** ↑ ↑ ↓ ↓ ← → ← → B A *inside* the arcade grants a full loadout once per game. On the intro page, the same code still starts Matrix mode.
+- **Achievements:** *Architect of the Matrix* for finding it and *Monolith Decomposer* for winning. They are toasts for this page session only, because there is no benchmark run to attach them to.
+- **High score:** stored in `localStorage` under `ctoexe.arcade.highscore.v1`.
+- **Reduced motion:** the game stays playable, but the rain is nearly static and there is no screen shake or flash.
+
+**Changing the trigger:** edit `PLAYER_RULES.secretArcadeNicknames` (lower-case phrases). Triggers are checked before nickname validation, so they may be longer than the 20-character nickname limit. The input accepts up to 32 raw characters, and the default phrase is 21. Gameplay tuning (waves, enemy HP, boss, power-ups, scores) is in `ARCADE_CONFIG`, and the game is the `SecretArcade` object in `index.html`.
 
 ## Customizing content
 
@@ -131,6 +148,7 @@ Coverage, in the order of the requirements:
 - Double-submit protection, persistence, clearing, and ranking and tie-break order.
 - Share URLs (clipboard and Web Share), URL and localStorage injection attempts, and subpath hosting.
 - Mobile overflow, keyboard navigation and reduced motion, reveals and easter eggs.
+- The secret arcade: the trigger and near-misses, movement, shooting, pause, power-up merges, the in-game Konami loadout next to the Matrix egg, clean exit (no loops or listeners left), game over, high score, boss and win, 360px layout and touch controls. These tests use a fake clock and seeded randomness.
 - No remote requests or `eval`.
 
 ## Deploy to GitHub Pages
