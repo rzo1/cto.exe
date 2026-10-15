@@ -1,0 +1,8 @@
+{
+  "description": "Read-only shared leaderboard. Edit and commit this file to update it; the game never writes to it. Scores are self-reported and unverified.",
+  "entries": [
+    { "name": "Richard", "score": 31337, "wpm": 97, "accuracy": 0.981 },
+    { "name": "null_pointer_ninja", "score": 22480, "wpm": 118, "accuracy": 0.991 },
+    { "name": "Daniel", "score": 9876, "wpm": 71, "accuracy": 0.902 }
+  ]
+}

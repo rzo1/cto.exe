@@ -1,0 +1,2394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTO.exe — Prove You're Not a Junior</title>
+<meta name="description" content="A completely fair benchmark of your engineering abilities.">
+<meta name="theme-color" content="#050816">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050816'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='28' font-weight='700' text-anchor='middle' fill='%2322d3ee'%3E%3E_%3C/text%3E%3C/svg%3E">
+<style>
+/* =====================================================================
+   THEME TOKENS
+   ===================================================================== */
+:root {
+  --bg: #050816;
+  --bg-2: #0a1128;
+  --panel: rgba(13, 20, 42, 0.72);
+  --panel-strong: rgba(17, 26, 54, 0.92);
+  --border: rgba(148, 163, 184, 0.16);
+  --border-strong: rgba(34, 211, 238, 0.45);
+  --text: #e2e8f0;
+  --muted: #9aa8bd;
+  --faint: #8291a8;
+  --cyan: #22d3ee;
+  --cyan-soft: rgba(34, 211, 238, 0.14);
+  --purple: #a855f7;
+  --purple-soft: rgba(168, 85, 247, 0.16);
+  --green: #4ade80;
+  --red: #f87171;
+  --red-soft: rgba(248, 113, 113, 0.18);
+  --amber: #fbbf24;
+  --gold: #fcd34d;
+  --silver: #cbd5e1;
+  --bronze: #f0a46b;
+  --radius: 16px;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", "DejaVu Sans Mono", monospace;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; background: var(--bg); }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(168, 85, 247, 0.18), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(34, 211, 238, 0.14), transparent 60%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+
+#particles {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; opacity: 0.55;
+}
+
+.app { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 16px 16px 48px; }
+
+h1, h2, h3 { line-height: 1.2; margin: 0; }
+h2 { font-size: 1.35rem; }
+h2:focus, h1:focus { outline: none; }
+p { margin: 0.4em 0; }
+a { color: var(--cyan); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.muted { color: var(--muted); }
+.small { font-size: 0.82rem; }
+
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 6px; }
+
+/* =====================================================================
+   BUTTONS & INPUTS
+   ===================================================================== */
+button { font: inherit; color: inherit; cursor: pointer; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 18px; min-height: 44px;
+  border-radius: 12px; border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04); color: var(--text);
+  font-weight: 600; letter-spacing: 0.01em;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.2s ease;
+}
+.btn:hover:not(:disabled) { border-color: var(--border-strong); background: var(--cyan-soft); }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  color: #050816; border-color: transparent;
+  box-shadow: 0 8px 30px rgba(34, 211, 238, 0.25);
+}
+.btn-primary:hover:not(:disabled) { background: linear-gradient(135deg, #67e8f9, #c084fc); box-shadow: 0 10px 36px rgba(168, 85, 247, 0.35); }
+.btn-ghost { background: transparent; }
+.btn-danger { border-color: rgba(248, 113, 113, 0.4); color: #fecaca; }
+.btn-danger:hover:not(:disabled) { background: var(--red-soft); border-color: var(--red); }
+.btn-small { padding: 7px 12px; min-height: 36px; font-size: 0.85rem; border-radius: 10px; }
+.link-btn { background: none; border: none; padding: 4px 2px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; font-size: 0.82rem; }
+.link-btn:hover { color: var(--cyan); }
+
+input[type="text"] {
+  width: 100%; font: inherit; color: var(--text);
+  background: rgba(2, 6, 23, 0.7);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px 14px; min-height: 46px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input[type="text"]:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2); }
+input[type="text"]:disabled { opacity: 0.55; }
+
+/* =====================================================================
+   LAYOUT: TOP BAR, PANELS
+   ===================================================================== */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding: 10px 0 18px;
+}
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.logo { font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em; }
+.logo span { background: linear-gradient(90deg, var(--cyan), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.version {
+  border: 1px solid var(--border); border-radius: 999px; background: rgba(255,255,255,0.03);
+  padding: 2px 9px; font-size: 0.72rem; color: var(--muted); min-height: 28px;
+}
+.version:hover { color: var(--cyan); border-color: var(--border-strong); }
+.topbar nav { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  padding: 22px;
+  min-width: 0;
+}
+.panel + .panel { margin-top: 16px; }
+.panel-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.eyebrow { font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cyan); }
+
+.screen { animation: screen-in 0.35s ease both; }
+@keyframes screen-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Challenge banner (from shared links) */
+.challenge-banner {
+  display: flex; gap: 12px; align-items: flex-start;
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  background: linear-gradient(90deg, var(--purple-soft), rgba(34, 211, 238, 0.06));
+  border-radius: 14px; padding: 12px 16px; margin-bottom: 16px;
+}
+.challenge-banner .icon { font-size: 1.4rem; line-height: 1; }
+.challenge-banner strong { color: #e9d5ff; word-break: break-word; }
+
+/* =====================================================================
+   INTRO SCREEN
+   ===================================================================== */
+.hero { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 16px; align-items: stretch; }
+.hero-title { font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 800; letter-spacing: -0.04em; margin: 6px 0 4px; }
+.hero-title .exe { background: linear-gradient(90deg, var(--cyan), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero-sub { font-size: clamp(1.05rem, 2.6vw, 1.35rem); color: #c7d2fe; margin: 0 0 6px; }
+.tagline { color: var(--muted); font-style: italic; }
+
+.nickname-form { margin-top: 20px; display: grid; gap: 10px; }
+.nickname-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.nickname-row input { flex: 1 1 220px; }
+.form-error { color: #fca5a5; min-height: 1.4em; font-size: 0.86rem; }
+.fine-print { font-size: 0.75rem; color: var(--faint); }
+
+.terminal {
+  background: rgba(2, 6, 23, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
+  font-size: 0.82rem; line-height: 1.7;
+  overflow-x: auto; min-width: 0;
+}
+.terminal .line { white-space: pre-wrap; word-break: break-word; }
+.boot .line { opacity: 0; animation: boot-in 0.3s ease forwards; }
+.ok { color: var(--green); }
+.warn { color: var(--amber); }
+.err { color: var(--red); }
+.info { color: var(--cyan); }
+.dim { color: var(--faint); }
+@keyframes boot-in { to { opacity: 1; } }
+.cursor-blink::after { content: "▌"; color: var(--cyan); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+.level-cards { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+.level-card {
+  border: 1px solid var(--border); border-radius: 12px; padding: 12px;
+  background: rgba(255, 255, 255, 0.025); min-width: 0;
+}
+.level-card .num { color: var(--cyan); font-size: 0.72rem; letter-spacing: 0.12em; }
+.level-card .name { font-weight: 700; margin-top: 4px; font-size: 0.9rem; }
+.level-card .desc { color: var(--muted); font-size: 0.76rem; margin-top: 4px; }
+
+/* =====================================================================
+   HUD
+   ===================================================================== */
+.hud { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; margin-bottom: 16px; }
+.hud-level { min-width: 0; }
+.hud-level h2 { font-size: 1.2rem; margin-top: 2px; }
+.hud-metric { text-align: right; }
+.hud-metric .label { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.hud-metric .value { font-size: 1.4rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+#hud-timer.low { color: var(--red); animation: pulse 1s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.55; } }
+.timer-bar { grid-column: 1 / -1; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.timer-bar > div { height: 100%; width: 100%; background: linear-gradient(90deg, var(--cyan), var(--purple)); transform-origin: left; transition: transform 0.12s linear; }
+.steps { grid-column: 1 / -1; display: flex; gap: 6px; }
+.steps span { flex: 1; height: 6px; border-radius: 6px; background: rgba(255,255,255,0.07); transition: background 0.3s ease; }
+.steps span.done { background: var(--purple); }
+.steps span.active { background: var(--cyan); box-shadow: 0 0 12px rgba(34, 211, 238, 0.6); }
+
+/* =====================================================================
+   TYPING LEVELS
+   ===================================================================== */
+.passage-wrap { position: relative; }
+.passage {
+  font-size: clamp(1rem, 2.4vw, 1.2rem); line-height: 1.9;
+  padding: 18px; border-radius: 12px;
+  background: rgba(2, 6, 23, 0.6); border: 1px solid var(--border);
+  word-break: break-word; user-select: none; -webkit-user-select: none;
+}
+.passage .ch { color: var(--faint); transition: color 0.08s ease; }
+.passage .ch.ok { color: var(--green); }
+.passage .ch.bad { color: #fff; background: rgba(248, 113, 113, 0.55); border-radius: 3px; }
+.passage .ch.cur { color: var(--text); box-shadow: inset 0 -2px 0 var(--cyan); background: var(--cyan-soft); }
+.countdown {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: clamp(2.5rem, 10vw, 4.5rem); font-weight: 900; color: var(--cyan);
+  background: rgba(5, 8, 22, 0.78); border-radius: 12px; backdrop-filter: blur(3px);
+  text-shadow: 0 0 30px rgba(34, 211, 238, 0.7);
+}
+.countdown span { animation: pop 0.6s ease both; }
+@keyframes pop { from { transform: scale(1.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.typing-input-row { margin-top: 14px; }
+#typing-input { font-size: 1.05rem; }
+.progress { height: 6px; border-radius: 6px; background: rgba(255,255,255,0.06); margin-top: 12px; overflow: hidden; }
+.progress > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--green), var(--cyan)); transition: width 0.15s ease; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 10px; margin-top: 14px; }
+.stat {
+  border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03); min-width: 0;
+}
+.stat .label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.stat .value { font-size: 1.3rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.stat .value.combo-hot { color: var(--amber); }
+
+/* =====================================================================
+   QUIZ LEVELS
+   ===================================================================== */
+.question-meta { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 0.8rem; margin-bottom: 8px; flex-wrap: wrap; }
+.question-prompt { font-size: 1.08rem; font-weight: 700; margin: 4px 0 14px; }
+.options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+.answer-option {
+  text-align: left; display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px 14px; min-height: 52px; border-radius: 12px;
+  border: 1px solid var(--border); background: rgba(255, 255, 255, 0.035);
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  word-break: break-word; min-width: 0;
+}
+.answer-option .key {
+  flex: 0 0 auto; width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; border: 1px solid var(--border); color: var(--cyan);
+}
+.answer-option:hover:not(:disabled) { border-color: var(--border-strong); background: var(--cyan-soft); transform: translateY(-1px); }
+.answer-option:disabled { cursor: default; }
+.answer-option.is-correct { border-color: var(--green); background: rgba(74, 222, 128, 0.14); }
+.answer-option.is-wrong { border-color: var(--red); background: var(--red-soft); }
+.feedback { margin-top: 14px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); }
+.feedback.good { border-color: rgba(74, 222, 128, 0.5); }
+.feedback.bad { border-color: rgba(248, 113, 113, 0.5); }
+.feedback .verdict { font-weight: 800; }
+.feedback.good .verdict { color: var(--green); }
+.feedback.bad .verdict { color: var(--red); }
+.feedback-actions { margin-top: 12px; display: flex; justify-content: flex-end; }
+
+/* IDE-style code window */
+.code-window { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #0b1020; min-width: 0; }
+.code-titlebar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border); font-size: 0.75rem; color: var(--muted); }
+.code-titlebar .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.code-titlebar .dot:nth-child(1) { background: #f87171; }
+.code-titlebar .dot:nth-child(2) { background: #fbbf24; }
+.code-titlebar .dot:nth-child(3) { background: #4ade80; }
+.code-titlebar .file { margin-left: 6px; }
+.code { margin: 0; padding: 12px 0; list-style: none; counter-reset: line; overflow-x: auto; font-size: 0.86rem; line-height: 1.65; }
+.code li { counter-increment: line; white-space: pre; padding: 0 14px 0 0; }
+.code li::before { content: counter(line); display: inline-block; width: 3.2em; padding-right: 1em; text-align: right; color: #5b6b85; user-select: none; -webkit-user-select: none; }
+.tok-kw { color: #c084fc; }
+.tok-str { color: #86efac; }
+.tok-num { color: #fbbf24; }
+.tok-com { color: #6b7d99; font-style: italic; }
+.tok-fn { color: #67e8f9; }
+.tok-punc { color: #94a3b8; }
+.code-output { border-top: 1px solid var(--border); border-radius: 0; border-left: 0; border-right: 0; border-bottom: 0; }
+
+/* Incident board */
+.incident-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-bottom: 16px; }
+.alerts { display: grid; gap: 8px; }
+.alert { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); font-size: 0.85rem; }
+.alert .sev { font-weight: 800; padding: 1px 8px; border-radius: 6px; font-size: 0.72rem; flex: 0 0 auto; }
+.alert.p0 { border-color: rgba(248,113,113,0.5); animation: alarm 1.6s ease-in-out infinite; }
+.alert.p0 .sev { background: var(--red); color: #1a0505; }
+.alert.p1 .sev { background: var(--amber); color: #1a1205; }
+.alert.info .sev { background: var(--cyan); color: #04141a; }
+@keyframes alarm { 50% { box-shadow: 0 0 0 1px rgba(248,113,113,0.6), 0 0 22px rgba(248,113,113,0.25); } }
+.deploy-card { font-size: 0.82rem; }
+.deploy-card dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 12px; margin: 0 0 10px; }
+.deploy-card dt { color: var(--muted); }
+.deploy-card dd { margin: 0; word-break: break-word; }
+.diff { margin: 0; padding: 10px 0; overflow-x: auto; background: #0b1020; border-radius: 10px; border: 1px solid var(--border); font-size: 0.8rem; }
+.diff div { white-space: pre; padding: 0 12px; }
+.diff .add { background: rgba(74, 222, 128, 0.12); color: #bbf7d0; }
+.diff .del { background: rgba(248, 113, 113, 0.12); color: #fecaca; }
+.log-terminal { max-height: 260px; overflow: auto; }
+.log-terminal .line { white-space: pre; word-break: normal; }
+
+/* =====================================================================
+   INTERLUDE & RESULTS
+   ===================================================================== */
+.interlude { text-align: center; }
+.interlude .big { font-size: clamp(1.8rem, 6vw, 2.6rem); font-weight: 900; margin: 6px 0; }
+.interlude .quip { color: var(--muted); font-style: italic; }
+.interlude .stat-grid { text-align: left; }
+.interlude .actions { margin-top: 18px; display: flex; justify-content: center; }
+
+.results-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; }
+.score-big {
+  font-size: clamp(2.6rem, 9vw, 4.4rem); font-weight: 900; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+  background: linear-gradient(90deg, var(--cyan), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.rank-title { font-size: 1.1rem; color: #e9d5ff; }
+.medal-ring {
+  width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center;
+  border: 2px solid var(--border-strong); background: radial-gradient(circle, var(--cyan-soft), transparent 70%);
+  font-size: 0.75rem; color: var(--muted); padding: 10px;
+  animation: spin-glow 6s linear infinite;
+}
+.medal-ring strong { display: block; font-size: 1.6rem; color: var(--text); }
+@keyframes spin-glow { 0% { box-shadow: 0 0 20px rgba(34,211,238,0.35); } 50% { box-shadow: 0 0 34px rgba(168,85,247,0.45); } 100% { box-shadow: 0 0 20px rgba(34,211,238,0.35); } }
+.breakdown { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.breakdown li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); }
+.breakdown li span:last-child { font-variant-numeric: tabular-nums; font-weight: 700; }
+.badges { display: flex; flex-wrap: wrap; gap: 8px; }
+.badge { display: inline-flex; gap: 8px; align-items: center; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(168,85,247,0.45); background: var(--purple-soft); font-size: 0.8rem; }
+.action-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.share-box { margin-top: 12px; display: grid; gap: 6px; }
+.status-line { min-height: 1.4em; font-size: 0.84rem; color: var(--green); }
+.two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+
+/* =====================================================================
+   LEADERBOARD
+   ===================================================================== */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab { padding: 7px 14px; border-radius: 999px; border: 1px solid var(--border); background: transparent; font-size: 0.82rem; min-height: 36px; }
+.tab[aria-selected="true"] { background: var(--cyan-soft); border-color: var(--border-strong); color: var(--cyan); }
+.table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+table.board { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.board th, .board td { padding: 11px 12px; text-align: left; border-bottom: 1px solid rgba(148,163,184,0.08); }
+.board th { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: rgba(255,255,255,0.03); font-weight: 600; }
+.board td.num, .board th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.board td.player { word-break: break-word; }
+.board tbody tr { transition: background 0.2s ease; }
+.board tbody tr:hover { background: rgba(255,255,255,0.03); }
+.rank-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 26px; border-radius: 8px; font-weight: 800; padding: 0 6px; }
+.rank-1 .rank-pill { background: linear-gradient(135deg, #fde68a, #f59e0b); color: #3b2300; animation: shine 2.6s ease-in-out infinite; }
+.rank-2 .rank-pill { background: linear-gradient(135deg, #f1f5f9, #94a3b8); color: #1e293b; animation: shine 2.6s ease-in-out 0.4s infinite; }
+.rank-3 .rank-pill { background: linear-gradient(135deg, #fed7aa, #c2703d); color: #3b1d06; animation: shine 2.6s ease-in-out 0.8s infinite; }
+.rank-1 td.player { color: var(--gold); }
+.rank-2 td.player { color: var(--silver); }
+.rank-3 td.player { color: var(--bronze); }
+@keyframes shine { 50% { filter: brightness(1.25); box-shadow: 0 0 16px rgba(253, 224, 71, 0.35); } }
+.board tr.is-current { background: linear-gradient(90deg, rgba(34,211,238,0.16), rgba(168,85,247,0.1)); box-shadow: inset 3px 0 0 var(--cyan); }
+.tag { font-size: 0.65rem; border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px; color: var(--muted); margin-left: 6px; vertical-align: middle; white-space: nowrap; }
+.tag.you { color: var(--cyan); border-color: var(--border-strong); }
+.board-note { margin-top: 12px; font-size: 0.78rem; color: var(--muted); }
+
+/* =====================================================================
+   REVEAL
+   ===================================================================== */
+.reveal-quote {
+  font-size: clamp(1.15rem, 3.4vw, 1.6rem); font-weight: 800; line-height: 1.4;
+  border-left: 3px solid var(--purple); padding: 6px 0 6px 16px; margin: 14px 0;
+}
+.reveal-list { margin: 10px 0 0; padding-left: 1.2em; }
+.reveal-list li { margin: 6px 0; }
+
+/* =====================================================================
+   OVERLAYS: TOASTS, MODAL, MATRIX
+   ===================================================================== */
+.toasts { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: grid; gap: 8px; max-width: min(360px, calc(100vw - 32px)); }
+.toast {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px 14px; border-radius: 12px; background: var(--panel-strong);
+  border: 1px solid rgba(168, 85, 247, 0.5); box-shadow: var(--shadow);
+  font-size: 0.84rem; animation: toast-in 0.35s ease both;
+}
+.toast.glitch { border-color: rgba(251, 191, 36, 0.6); font-size: 0.78rem; }
+.toast .t-icon { font-size: 1.2rem; line-height: 1; }
+.toast strong { display: block; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.modal-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(2, 6, 23, 0.75); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal { max-width: 560px; width: 100%; max-height: calc(100vh - 32px); overflow: auto; }
+.modal ul { padding-left: 1.2em; }
+.modal-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+
+.matrix-overlay { position: fixed; inset: 0; z-index: 70; background: #000; display: flex; align-items: center; justify-content: center; }
+.matrix-overlay canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.matrix-overlay .matrix-msg { position: relative; text-align: center; color: #4ade80; text-shadow: 0 0 12px #22c55e; font-size: clamp(1.1rem, 4vw, 1.8rem); font-weight: 800; padding: 16px; background: rgba(0,0,0,0.6); border-radius: 12px; }
+.matrix-overlay .btn { margin-top: 14px; }
+
+.footer { margin-top: 28px; text-align: center; font-size: 0.75rem; color: var(--faint); }
+
+.glitch-flash { animation: glitch 0.25s steps(2) 2; }
+@keyframes glitch { 0% { transform: translate(1px, -1px); filter: hue-rotate(40deg); } 100% { transform: translate(-1px, 1px); filter: none; } }
+
+/* =====================================================================
+   RESPONSIVE
+   ===================================================================== */
+@media (max-width: 860px) {
+  .hero, .two-col, .incident-grid { grid-template-columns: minmax(0, 1fr); }
+  .level-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  body { font-size: 14px; }
+  .panel { padding: 16px; }
+  .options { grid-template-columns: minmax(0, 1fr); }
+  .hud { grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; }
+  .hud-metric .value { font-size: 1.1rem; }
+  .results-head { grid-template-columns: minmax(0, 1fr); }
+  .medal-ring { width: 96px; height: 96px; }
+  .board th, .board td { padding: 9px 7px; }
+  .board { font-size: 0.8rem; }
+  .level-cards { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* =====================================================================
+   REDUCED MOTION (system preference is mirrored into data-motion)
+   ===================================================================== */
+html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-motion="reduced"] *::after {
+  animation-duration: 0.001ms !important; animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important; scroll-behavior: auto !important;
+}
+html[data-motion="reduced"] .boot .line { opacity: 1; }
+html[data-motion="reduced"] #particles { display: none; }
+</style>
+</head>
+<body>
+<canvas id="particles" aria-hidden="true"></canvas>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">CTO<span>.exe</span></span>
+      <button type="button" id="version-label" class="version" aria-label="Version v4.0.4-rc.1">v4.0.4-rc.1</button>
+    </div>
+    <nav aria-label="Game">
+      <button type="button" id="open-leaderboard" class="btn btn-small btn-ghost">🏆 Leaderboard</button>
+      <button type="button" id="motion-toggle" class="btn btn-small btn-ghost" aria-pressed="false">Reduce motion: off</button>
+    </nav>
+  </header>
+
+  <aside id="challenge-banner" class="challenge-banner" hidden aria-live="polite">
+    <span class="icon" aria-hidden="true">⚔️</span>
+    <div>
+      <div><strong id="challenge-from"></strong> challenged you: <span id="challenge-message"></span></div>
+      <div class="small muted">Claimed score: <strong id="challenge-claim"></strong> — <em>unverified claim</em> from a shared link. It is not added to any leaderboard.</div>
+    </div>
+  </aside>
+
+  <main id="main">
+    <!-- ============================== INTRO ============================== -->
+    <section id="screen-intro" class="screen" aria-labelledby="intro-title">
+      <div class="hero">
+        <div class="panel">
+          <div class="eyebrow">Season 4 · Engineering Benchmark</div>
+          <h1 id="intro-title" class="hero-title" tabindex="-1">CTO<span class="exe">.exe</span></h1>
+          <p class="hero-sub">Prove You're Not a Junior</p>
+          <p class="tagline">A completely fair benchmark of your engineering abilities.</p>
+          <form id="nickname-form" class="nickname-form" novalidate>
+            <label for="nickname">Nickname <span class="muted small">(shown on the local leaderboard)</span></label>
+            <div class="nickname-row">
+              <input type="text" id="nickname" name="nickname" maxlength="20" autocomplete="nickname" spellcheck="false" placeholder="e.g. git_blame_me" required aria-describedby="nickname-error">
+              <button type="submit" id="start-btn" class="btn btn-primary">Start benchmark ▸</button>
+            </div>
+            <div id="nickname-error" class="form-error" role="alert"></div>
+            <p class="fine-print">By starting, you agree that your keyboard, your coffee and your ego are your own responsibility. Fairness module certified*.<br>*certification pending review by the certification committee (of one).</p>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span class="eyebrow">bench://boot.log</span><span class="small muted">PID 1337</span></div>
+          <div class="terminal boot" aria-label="Boot log">
+            <div class="line" style="animation-delay:.1s"><span class="ok">[ ok ]</span> Loading benchmark kernel…</div>
+            <div class="line" style="animation-delay:.4s"><span class="ok">[ ok ]</span> Calibrating keyboard latency… 0.000 ms</div>
+            <div class="line" style="animation-delay:.7s"><span class="ok">[ ok ]</span> Fairness module: <span class="info">ENABLED</span></div>
+            <div class="line" style="animation-delay:1s"><span class="ok">[ ok ]</span> Loading 5 levels · 10 puzzles · 1 incident</div>
+            <div class="line" style="animation-delay:1.3s"><span class="warn">[warn]</span> Detected 3 open Stack Overflow tabs</div>
+            <div class="line" style="animation-delay:1.6s"><span class="ok">[ ok ]</span> Anti-cheat: copy/paste disabled in typing fields</div>
+            <div class="line" style="animation-delay:1.9s"><span class="err">[fail]</span> Excuses module not found (expected)</div>
+            <div class="line cursor-blink" style="animation-delay:2.2s"><span class="dim">$</span> awaiting challenger </div>
+          </div>
+        </div>
+      </div>
+      <div class="level-cards" aria-label="Levels">
+        <div class="level-card"><div class="num">LEVEL 01</div><div class="name">Keyboard Calibration</div><div class="desc">TypeRacer-style warmup. WPM, accuracy, combos.</div></div>
+        <div class="level-card"><div class="num">LEVEL 02</div><div class="name">CTO Logic Gate</div><div class="desc">Five timed riddles. Event loop included.</div></div>
+        <div class="level-card"><div class="num">LEVEL 03</div><div class="name">The Impossible Bug</div><div class="desc">Read the code. Predict the output.</div></div>
+        <div class="level-card"><div class="num">LEVEL 04</div><div class="name">Production Incident</div><div class="desc">P0 outage. Logs, alerts, a suspicious deploy.</div></div>
+        <div class="level-card"><div class="num">LEVEL 05</div><div class="name">Final Boss</div><div class="desc">30-second legendary typing sprint.</div></div>
+      </div>
+    </section>
+
+    <!-- ============================== LEVEL ============================== -->
+    <section id="screen-level" class="screen" hidden aria-labelledby="hud-title">
+      <div class="panel">
+        <div class="hud">
+          <div class="hud-level">
+            <div class="eyebrow" id="hud-level">Level 1 / 5</div>
+            <h2 id="hud-title" tabindex="-1">Keyboard Calibration</h2>
+          </div>
+          <div class="hud-metric"><div class="label">Time</div><div class="value" id="hud-timer" aria-live="off">0:00</div></div>
+          <div class="hud-metric"><div class="label">Score</div><div class="value" id="hud-score">0</div></div>
+          <div class="timer-bar" aria-hidden="true"><div id="hud-timer-bar"></div></div>
+          <div class="steps" id="hud-steps" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <div id="level-body"></div>
+      </div>
+    </section>
+
+    <!-- ============================ INTERLUDE ============================ -->
+    <section id="screen-interlude" class="screen" hidden aria-labelledby="interlude-title">
+      <div class="panel interlude">
+        <div class="eyebrow" id="interlude-eyebrow">Level complete</div>
+        <h2 id="interlude-title" class="big" tabindex="-1">Level cleared</h2>
+        <p class="quip" id="interlude-quip"></p>
+        <div class="stat-grid" id="interlude-stats"></div>
+        <div class="actions"><button type="button" id="interlude-continue" class="btn btn-primary">Continue ▸</button></div>
+      </div>
+    </section>
+
+    <!-- ============================= RESULTS ============================= -->
+    <section id="screen-results" class="screen" hidden aria-labelledby="results-title">
+      <div class="panel">
+        <div class="results-head">
+          <div>
+            <div class="eyebrow">Benchmark complete · <span id="results-player"></span></div>
+            <h2 id="results-title" tabindex="-1" class="sr-only">Results</h2>
+            <div class="score-big" id="final-score" aria-live="polite">0</div>
+            <div class="rank-title" id="final-rank-title"></div>
+          </div>
+          <div class="medal-ring" aria-hidden="true"><div><strong id="medal-rank">—</strong>local rank</div></div>
+        </div>
+        <div class="stat-grid" id="result-stats">
+          <div class="stat"><div class="label">Overall WPM</div><div class="value" id="result-wpm">0</div></div>
+          <div class="stat"><div class="label">Accuracy</div><div class="value" id="result-accuracy">0%</div></div>
+          <div class="stat"><div class="label">Keystrokes</div><div class="value" id="result-keystrokes">0</div></div>
+          <div class="stat"><div class="label">L1 WPM</div><div class="value" id="result-l1-wpm">0</div></div>
+          <div class="stat"><div class="label">Boss WPM</div><div class="value" id="result-l5-wpm">0</div></div>
+          <div class="stat"><div class="label">Correct answers</div><div class="value" id="result-correct">0/10</div></div>
+          <div class="stat"><div class="label">Active time</div><div class="value" id="result-time">0s</div></div>
+        </div>
+      </div>
+      <div class="two-col" style="margin-top:16px">
+        <div class="panel">
+          <div class="panel-title"><h3>Score breakdown</h3></div>
+          <ul class="breakdown" id="score-breakdown"></ul>
+          <div class="panel-title" style="margin-top:18px"><h3>Achievements</h3></div>
+          <div class="badges" id="result-achievements"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><h3>What next?</h3></div>
+          <div class="action-row">
+            <button type="button" id="submit-score" class="btn btn-primary">Submit to local leaderboard</button>
+            <button type="button" id="view-leaderboard" class="btn">View leaderboard</button>
+          </div>
+          <div id="submit-status" class="status-line" role="status"></div>
+          <div class="action-row">
+            <button type="button" id="challenge-btn" class="btn">⚔️ Challenge a Developer</button>
+            <button type="button" id="copy-results" class="btn">📋 Copy Results</button>
+          </div>
+          <div class="share-box" id="share-box" hidden>
+            <label for="share-output" class="small muted">Challenge link</label>
+            <input type="text" id="share-output" readonly>
+          </div>
+          <div id="share-status" class="status-line" role="status"></div>
+          <div class="action-row">
+            <button type="button" id="play-again" class="btn">↻ Play again</button>
+          </div>
+          <p style="margin-top:14px"><button type="button" id="behind-benchmark" class="link-btn">Behind the benchmark</button></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== REVEAL ============================= -->
+    <section id="screen-reveal" class="screen" hidden aria-labelledby="reveal-title">
+      <div class="panel">
+        <div class="eyebrow">Behind the benchmark</div>
+        <h2 id="reveal-title" tabindex="-1">Full disclosure</h2>
+        <p class="reveal-quote" id="reveal-quote"></p>
+        <div id="reveal-body"></div>
+        <div class="action-row">
+          <button type="button" id="reveal-back" class="btn">← Back to results</button>
+          <button type="button" id="reveal-play-again" class="btn btn-primary">↻ Play again</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ LEADERBOARD ========================== -->
+    <section id="screen-leaderboard" class="screen" hidden aria-labelledby="leaderboard-title">
+      <div class="panel">
+        <div class="panel-title">
+          <div>
+            <div class="eyebrow">Tournament standings</div>
+            <h2 id="leaderboard-title" tabindex="-1">Local leaderboard</h2>
+          </div>
+          <div class="tabs" role="tablist" aria-label="Leaderboard source">
+            <button type="button" role="tab" id="tab-local" class="tab" aria-selected="true">Local leaderboard</button>
+            <button type="button" role="tab" id="tab-shared" class="tab" aria-selected="false" hidden>Shared (read-only)</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="board" aria-describedby="board-note">
+            <thead><tr><th scope="col">Rank</th><th scope="col">Player</th><th scope="col" class="num">Score</th><th scope="col" class="num">WPM</th><th scope="col" class="num">Accuracy</th></tr></thead>
+            <tbody id="leaderboard-body"></tbody>
+          </table>
+        </div>
+        <p class="board-note" id="board-note"></p>
+        <div class="action-row">
+          <button type="button" id="leaderboard-back" class="btn">← Back</button>
+          <button type="button" id="clear-leaderboard" class="btn btn-danger">Clear local leaderboard</button>
+        </div>
+        <div id="leaderboard-status" class="status-line" role="status"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">CTO.exe runs entirely in your browser. No accounts, no analytics, no servers. Scores live in this browser's localStorage only.</footer>
+</div>
+
+<div id="toasts" class="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<div id="modal-backdrop" class="modal-backdrop" hidden>
+  <div class="modal panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <h2 id="modal-title"></h2>
+    <div id="modal-body"></div>
+    <div class="modal-actions"><button type="button" id="modal-close" class="btn">Close</button></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+(() => {
+  /* =====================================================================
+     1. GAME CONTENT & TIMING
+     Edit passages, questions and time limits here. All text is rendered
+     with textContent, so it is safe to put any characters in it.
+     ===================================================================== */
+  const GAME_CONFIG = {
+    version: 'v4.0.4-rc.1',
+    storageKeys: {
+      leaderboard: 'ctoexe.leaderboard.v1',
+      lastEntryId: 'ctoexe.lastEntryId.v1',
+      motion: 'ctoexe.motion.v1',
+    },
+    sharedLeaderboardUrl: 'shared-leaderboard.json',
+    countdownSteps: ['3', '2', '1', 'GO'],
+    countdownStepMs: 700,
+    nicknameMaxLength: 20,
+    levels: [
+      {
+        id: 'keyboard-calibration', type: 'typing', title: 'Keyboard Calibration', isBoss: false, timeLimitSec: 120,
+        passage: 'Production is just staging with more witnesses. The bug is not a feature until the product manager approves it.',
+        quips: ['Calibration complete. Your keyboard has been measured and found… existent.', 'Warmup done. HR has been notified of your WPM.'],
+      },
+      { id: 'logic-gate', type: 'quiz', title: 'CTO Logic Gate', category: 'riddle', questionSet: 'riddles',
+        quips: ['Logic gate passed. Or bypassed. The audit log is ambiguous.'] },
+      { id: 'impossible-bug', type: 'quiz', title: 'The Impossible Bug', category: 'debug', questionSet: 'bugs',
+        quips: ['Bugs identified. Tickets created. Tickets closed as "works on my machine".'] },
+      { id: 'production-incident', type: 'quiz', title: 'Production Incident', category: 'incident', questionSet: 'incident',
+        quips: ['Incident resolved. Post-mortem scheduled for never.'] },
+      {
+        id: 'final-boss', type: 'typing', title: 'Final Boss — The Legendary Typing Sprint', isBoss: true, timeLimitSec: 30,
+        passage: 'We migrated the monolith to microservices, the microservices to serverless, and serverless back to a monolith when the invoice arrived. Our new stack uses blockchain for logging, AI for code review, and one YAML file nobody is allowed to touch. When the build fails we rename the branch to final-final-v2 and blame DNS. It is always DNS. Even when it is not DNS, it is spiritually DNS.',
+        quips: ['The boss has been defeated. It will respawn on Monday.'],
+      },
+    ],
+    riddles: [
+      {
+        id: 'event-loop', timeLimitSec: 25, achievement: 'eventLoopWhisperer',
+        prompt: 'What does this log, in order?',
+        code: ['console.log("A");', 'setTimeout(() => console.log("B"), 0);', 'Promise.resolve().then(() => console.log("C"));', 'console.log("D");'],
+        options: ['A, B, C, D', 'A, D, C, B', 'A, D, B, C', 'A, C, D, B'], correctIndex: 1,
+        explanation: 'Synchronous code runs first (A, D). Then the microtask queue (the promise: C), then macrotasks (the timer: B).',
+      },
+      {
+        id: 'default-sort', timeLimitSec: 20,
+        prompt: 'What does this print?',
+        code: ['console.log([1, 2, 10].sort());'],
+        options: ['[1, 2, 10]', '[10, 2, 1]', '[1, 10, 2]', 'TypeError: numbers are not sortable'], correctIndex: 2,
+        explanation: 'Without a comparator, sort() compares values as strings, and "10" < "2".',
+      },
+      {
+        id: 'lying-servers', timeLimitSec: 35,
+        prompt: 'Three servers report status. Alpha: "Beta is lying." Beta: "Gamma is lying." Gamma: "Alpha and Beta are both lying." Which server(s) tell the truth?',
+        options: ['Only Alpha', 'Only Beta', 'Only Gamma', 'Alpha and Gamma'], correctIndex: 1,
+        explanation: 'If Gamma were truthful, Alpha would be lying, making Beta truthful — contradiction. So Gamma lies, Beta is truthful, and Alpha lies.',
+      },
+      {
+        id: 'var-closure', timeLimitSec: 25,
+        prompt: 'What does this loop log?',
+        code: ['for (var i = 0; i < 3; i++) {', '  setTimeout(() => console.log(i), 0);', '}'],
+        options: ['0 1 2', '3 3 3', '0 0 0', 'undefined undefined undefined'], correctIndex: 1,
+        explanation: 'var is function-scoped: every callback shares one i, which is 3 by the time the timers fire. Use let.',
+      },
+      {
+        id: 'binary-search', timeLimitSec: 20,
+        prompt: 'A sorted array holds 1,000,000 unique IDs. In the worst case, how many comparisons does binary search need?',
+        options: ['20', '1,000', '500,000', '1,000,000 (just to be thorough)'], correctIndex: 0,
+        explanation: '2^20 = 1,048,576 ≥ 1,000,000, so about 20 halvings are enough.',
+      },
+    ],
+    bugs: [
+      {
+        id: 'aliasing', timeLimitSec: 30, file: 'team.js',
+        prompt: 'What does this print?',
+        code: ['const a = [1, 2, 3];', 'const b = a;', 'b.push(4);', 'console.log(a.length);'],
+        output: '4',
+        options: ['3', '4', 'undefined', 'TypeError: Assignment to constant variable.'], correctIndex: 1,
+        explanation: 'b and a reference the same array. const prevents reassignment, not mutation.',
+      },
+      {
+        id: 'asi', timeLimitSec: 35, file: 'user.js', achievement: 'semicolonSommelier',
+        prompt: 'What does this print?',
+        code: ['function getUser() {', '  return', '  {', '    name: "Daniel"', '  };', '}', '', 'console.log(getUser());'],
+        output: 'undefined',
+        options: ['{ name: "Daniel" }', 'undefined', 'SyntaxError: Unexpected token', '"Daniel"'], correctIndex: 1,
+        explanation: 'Automatic semicolon insertion turns "return" followed by a newline into "return;". The object literal is never returned.',
+      },
+      {
+        id: 'async-foreach', timeLimitSec: 45, file: 'loadAll.js',
+        prompt: 'fetchUser() returns a Promise that resolves after a network call. What gets logged, and where is the bug?',
+        code: ['async function loadAll(ids) {', '  const results = [];', '  ids.forEach(async (id) => {', '    const user = await fetchUser(id);', '    results.push(user);', '  });', '  return results;', '}', '', 'loadAll([1, 2, 3]).then((r) => console.log(r.length));'],
+        output: '0',
+        options: ['3 — works fine, ship it', '0 — line 3: forEach does not await async callbacks, so results is returned empty', 'undefined — line 7: return needs await', '[object Promise] — line 4 should use .then()'], correctIndex: 1,
+        explanation: 'forEach ignores the promises its callback returns. Use for…of with await, or await Promise.all(ids.map(fetchUser)).',
+      },
+    ],
+    incident: {
+      alerts: [
+        { severity: 'P0', className: 'p0', text: 'Severity: P0. The CEO has opened DevTools.' },
+        { severity: 'P1', className: 'p1', text: 'orders-svc 5xx rate 38% (threshold 1%). Customers are refreshing aggressively.' },
+        { severity: 'INFO', className: 'info', text: 'Rollback unavailable. Someone force-pushed main.' },
+      ],
+      deploy: {
+        service: 'orders-svc', version: 'v4.2.0', commit: '9f3c2e1',
+        message: 'refactor: tidy env config (tiny change, no review needed)', when: 'Friday 17:58',
+        diff: [
+          { kind: 'ctx', text: '   env:' },
+          { kind: 'ctx', text: '     NODE_ENV: production' },
+          { kind: 'del', text: '-    DATABASE_URL: ${{ secrets.DATABASE_URL }}' },
+          { kind: 'add', text: '+    DATABASE_URL: ${{ secrets.DATABSE_URL }}' },
+          { kind: 'ctx', text: '     REDIS_URL: ${{ secrets.REDIS_URL }}' },
+        ],
+      },
+      logs: [
+        { level: 'info', text: '17:58:02 deploy     orders-svc v4.2.0 (9f3c2e1) rolled out to 100%' },
+        { level: 'warn', text: '17:58:04 config     DATABASE_URL is empty, falling back to postgres://127.0.0.1:5432/orders' },
+        { level: 'err', text: '17:58:05 orders-svc Error: connect ECONNREFUSED 127.0.0.1:5432' },
+        { level: 'dim', text: '             at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16)' },
+        { level: 'dim', text: '             at Pool.connect (/app/node_modules/pg-pool/index.js:45:11)' },
+        { level: 'dim', text: '             at OrdersRepository.create (/app/src/orders/repository.js:28:19)' },
+        { level: 'err', text: '17:58:07 gateway    502 Bad Gateway rate 0.2% -> 38%' },
+        { level: 'info', text: '17:58:09 postgres   primary db-orders-1 healthy, 41 active connections (other services)' },
+        { level: 'info', text: '17:58:10 redis      hit ratio 94% (normal)' },
+        { level: 'info', text: '17:58:12 metrics    orders-svc CPU 12%, heap 180MB (normal)' },
+        { level: 'warn', text: '17:58:15 slack      #general: "is the site down or is it just me" (x47)' },
+      ],
+      questions: [
+        {
+          id: 'incident-root-cause', timeLimitSec: 50,
+          prompt: 'Diagnosis: what is the root cause of the outage?',
+          options: [
+            'The Postgres primary crashed under load',
+            'The deploy references a misspelled secret (DATABSE_URL), so DATABASE_URL is empty and the service connects to localhost',
+            'A Redis cache stampede after the deploy',
+            'Node.js ran out of memory',
+          ], correctIndex: 1,
+          explanation: 'Postgres, Redis, CPU and heap are all healthy. The diff typo empties DATABASE_URL and the config falls back to 127.0.0.1.',
+        },
+        {
+          id: 'incident-fix', timeLimitSec: 45,
+          prompt: 'Rollback is unavailable. What is the correct fix?',
+          options: [
+            'Scale orders-svc to 200 replicas so more of them can fail in parallel',
+            'Restart the Postgres primary and hope',
+            'Fix the secret reference to secrets.DATABASE_URL, redeploy, and make startup fail fast when DATABASE_URL is missing',
+            'Flush Redis and post "investigating" in #general for three hours',
+          ], correctIndex: 2,
+          explanation: 'Fix the config, redeploy, and turn silent fallbacks into loud startup failures so this never pages anyone again.',
+        },
+      ],
+    },
+    wrongAnswerQuips: [
+      'Bold choice. Wrong, but bold.',
+      'That answer has been escalated to your manager.',
+      'Compiles on your machine, though.',
+      'Interesting. The intern said the same thing.',
+      'Incorrect. Have you tried turning your brain off and on again?',
+      'The linter is disappointed but not surprised.',
+      'Confidently incorrect — a classic senior move.',
+    ],
+    timeoutQuips: [
+      'Time\'s up. The sprint ended and so did this opportunity.',
+      'Time\'s up. The deadline was yesterday, as usual.',
+    ],
+    challengeMessages: [
+      'Think your JavaScript skills are better? Prove it.',
+      'Your keyboard called. It wants a rematch.',
+      'Senior engineers finish this before their coffee cools.',
+      'Loser explains the event loop at the next all-hands.',
+    ],
+    rankTitles: [
+      { minScore: 0, title: 'Junior Developer (provisional)' },
+      { minScore: 4000, title: 'Mid-Level Developer' },
+      { minScore: 8000, title: 'Senior Engineer' },
+      { minScore: 12000, title: 'Staff Engineer' },
+      { minScore: 16000, title: 'Principal Engineer' },
+      { minScore: 22000, title: 'Chief Technical Overlord' },
+    ],
+  };
+
+  /* Fictional demo competitors. They are never written to storage and
+     are merged into the local standings for flavour. */
+  const DEMO_COMPETITORS = [
+    { id: 'demo-01', name: 'null_pointer_ninja', score: 22480, wpm: 118, accuracy: 0.991 },
+    { id: 'demo-02', name: 'TabsNotSpaces', score: 19875, wpm: 104, accuracy: 0.982 },
+    { id: 'demo-03', name: 'ex-FAANG (mentions it)', score: 17320, wpm: 96, accuracy: 0.975 },
+    { id: 'demo-04', name: 'YAML_Sommelier', score: 15410, wpm: 88, accuracy: 0.968 },
+    { id: 'demo-05', name: 'Daniel', score: 12450, wpm: 79, accuracy: 0.942 },
+    { id: 'demo-06', name: 'git push --force', score: 10980, wpm: 83, accuracy: 0.884 },
+    { id: 'demo-07', name: 'StackOverflow_Copypasta', score: 8720, wpm: 64, accuracy: 0.91 },
+    { id: 'demo-08', name: 'Regex Whisperer', score: 7315, wpm: 58, accuracy: 0.979 },
+    { id: 'demo-09', name: 'Intern (unpaid)', score: 3140, wpm: 41, accuracy: 0.826 },
+  ].map((entry) => ({ ...entry, demo: true, createdAt: 0 }));
+
+  /* =====================================================================
+     2. PLAYER RULES — the whole "benchmark calibration" lives here.
+     `standard` applies to everyone. A profile is selected by nickname,
+     trimmed and lower-cased, and is deep-merged over `standard`.
+     Nothing outside this object hard-codes nickname behaviour.
+     ===================================================================== */
+  const PLAYER_RULES = {
+    standard: {
+      inputInterference: {
+        enabled: false,
+        rejectRateMin: 0,              // per-keystroke chance a printable key is silently dropped…
+        rejectRateMax: 0,              // …picked uniformly in [min, max] at the start of each typing level
+        finalStretchStart: 0.75,       // progress (0..1) after which the drop rate starts ramping up
+        finalStretchExtraRate: 0,      // extra drop chance reached at 100% progress
+        bossIntensity: 1,              // multiplier applied to all drop rates in the final boss level
+        maxRejectRate: 0.25,           // hard ceiling, so the passage always stays finishable
+        feedbackDelayChance: 0,        // chance an accepted keystroke delays the passage highlight…
+        feedbackDelayMinMs: 0,         // …by a random duration in [min, max] milliseconds
+        feedbackDelayMaxMs: 0,
+        glitchNoticeChance: 0,         // chance per accepted keystroke of a fictional glitch toast
+        glitchNoticeMaxPerLevel: 0,
+      },
+      scoring: {
+        typingScoreMultiplier: 1,      // applied to typing points (displayed WPM/accuracy stay real)
+        riddleScoreMultiplier: 1,      // applied to all multiple-choice points (levels 2–4)
+        hiddenLevelBonus: 0,           // added on top of the public per-level clear bonus
+      },
+      timing: {
+        timerAssistFactor: 0,          // 0.15 = every countdown silently runs 15% longer than displayed
+      },
+      revealVariant: 'standard',
+    },
+    profiles: {
+      daniel: {
+        inputInterference: {
+          enabled: true,
+          rejectRateMin: 0.04,
+          rejectRateMax: 0.08,
+          finalStretchExtraRate: 0.06,
+          bossIntensity: 1.5,
+          feedbackDelayChance: 0.12,
+          feedbackDelayMinMs: 100,
+          feedbackDelayMaxMs: 250,
+          glitchNoticeChance: 0.006,
+          glitchNoticeMaxPerLevel: 1,
+        },
+        revealVariant: 'daniel',
+      },
+      richard: {
+        scoring: { typingScoreMultiplier: 2.5, riddleScoreMultiplier: 1.5, hiddenLevelBonus: 750 },
+        timing: { timerAssistFactor: 0.15 },
+        revealVariant: 'richard',
+      },
+    },
+    glitchNotices: [
+      'KEYBOARD_BUFFER_UNDERFLOW — input stream resynchronized',
+      'ERR_KEYSTROKE_NOT_FOUND (404) — retrying…',
+      'USB_HID_PACKET_LOST — recovered 1 of 2 packets',
+      'KEYCAP_ENTROPY_EXCEEDED — please type with less entropy',
+    ],
+  };
+
+  function normalizeNickname(nickname) {
+    return String(nickname == null ? '' : nickname).trim().toLowerCase();
+  }
+
+  function resolvePlayerRules(nickname) {
+    const profileKey = normalizeNickname(nickname);
+    const profile = Object.prototype.hasOwnProperty.call(PLAYER_RULES.profiles, profileKey) ? PLAYER_RULES.profiles[profileKey] : {};
+    const base = PLAYER_RULES.standard;
+    return {
+      profileKey: Object.keys(profile).length ? profileKey : 'standard',
+      inputInterference: { ...base.inputInterference, ...(profile.inputInterference || {}) },
+      scoring: { ...base.scoring, ...(profile.scoring || {}) },
+      timing: { ...base.timing, ...(profile.timing || {}) },
+      revealVariant: profile.revealVariant || base.revealVariant,
+    };
+  }
+
+  /* =====================================================================
+     3. UTILITIES
+     ===================================================================== */
+  const $ = (selector, root = document) => root.querySelector(selector);
+
+  function el(tag, props = {}, children = []) {
+    const node = document.createElement(tag);
+    for (const [key, value] of Object.entries(props)) {
+      if (value == null || value === false) continue;
+      if (key === 'class') node.className = value;
+      else if (key === 'text') node.textContent = value;
+      else if (key === 'dataset') Object.assign(node.dataset, value);
+      else if (key.startsWith('on') && typeof value === 'function') node.addEventListener(key.slice(2).toLowerCase(), value);
+      else node.setAttribute(key, value === true ? '' : String(value));
+    }
+    for (const child of [].concat(children)) {
+      if (child == null || child === false) continue;
+      node.append(child instanceof Node ? child : document.createTextNode(String(child)));
+    }
+    return node;
+  }
+
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
+  const formatInt = (value) => Math.round(value).toLocaleString('en-US');
+  const formatPct = (ratio) => `${(clamp(ratio, 0, 1) * 100).toFixed(1)}%`;
+  const formatClock = (seconds) => {
+    const whole = Math.max(0, Math.ceil(seconds - 1e-9));
+    return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`;
+  };
+  const plural = (count, word) => `${count} ${word}${count === 1 ? '' : 's'}`;
+  const formatDuration = (seconds) => {
+    const s = Math.round(Math.max(0, seconds));
+    return s >= 60 ? `${Math.floor(s / 60)}m ${s % 60}s` : `${s}s`;
+  };
+
+  /** mulberry32: small, fast, deterministic PRNG for the gameplay calibration. */
+  function createSeededRandom(seed) {
+    let a = seed >>> 0;
+    return function next() {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function randomUint32() {
+    const buffer = new Uint32Array(1);
+    crypto.getRandomValues(buffer);
+    return buffer[0];
+  }
+
+  function createId(prefix) {
+    return `${prefix}-${randomUint32().toString(36)}${randomUint32().toString(36)}`;
+  }
+
+  const NICKNAME_PATTERN = /^[\p{L}\p{N}][\p{L}\p{N} _.()'-]*$/u;
+  /** Returns a clean nickname or null. Used for the form, URLs and storage. */
+  function sanitizeNickname(raw) {
+    if (typeof raw !== 'string') return null;
+    const cleaned = raw.trim().replace(/\s+/g, ' ');
+    if (cleaned.length < 1 || cleaned.length > GAME_CONFIG.nicknameMaxLength) return null;
+    return NICKNAME_PATTERN.test(cleaned) ? cleaned : null;
+  }
+
+  const Storage = {
+    get(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw == null ? fallback : JSON.parse(raw);
+      } catch (error) {
+        return fallback;
+      }
+    },
+    set(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch (error) { return false; }
+    },
+    remove(key) {
+      try { localStorage.removeItem(key); } catch (error) { /* storage unavailable: nothing to remove */ }
+    },
+  };
+
+  /* =====================================================================
+     4. SCORING — pure, deterministic, unit-testable.
+     ===================================================================== */
+  const SCORE_WEIGHTS = {
+    typing: {
+      pointsPerWpm: 30,          // base typing points = WPM × 30 × accuracy²
+      maxWpm: 250,               // WPM is clamped to [0, 250] for scoring
+      comboPointValue: 2,        // every combo point (sum of combo multipliers per correct key) is worth 2
+      bossMultiplier: 1.5,       // the final boss level counts 1.5×
+    },
+    combo: {
+      stepEvery: 15,             // combo multiplier grows every 15 consecutive correct keys…
+      stepSize: 0.5,             // …by +0.5…
+      maxMultiplier: 4,          // …up to 4×
+    },
+    questions: {                 // per correct answer: base + seconds left × perSecondLeft
+      riddle: { base: 400, perSecondLeft: 15 },
+      debug: { base: 600, perSecondLeft: 15 },
+      incident: { base: 800, perSecondLeft: 10 },
+    },
+    levelClearBonus: 250,        // public bonus for each completed level
+    completion: {
+      maxBonus: 1500,            // full speed bonus when the active play time is ≤ parSeconds
+      parSeconds: 120,
+      penaltyPerSecond: 5,       // bonus shrinks by 5 per second beyond par, never below 0
+      maxSeconds: 3600,          // active time is clamped to [0, 3600] seconds
+    },
+  };
+
+  const Scoring = {
+    weights: SCORE_WEIGHTS,
+
+    /** Standard WPM: (correct characters / 5) per minute. */
+    computeWpm(correctChars, elapsedMs) {
+      const chars = clamp(correctChars, 0, 1e6);
+      const ms = clamp(elapsedMs, 0, 3600000);
+      if (ms <= 0 || chars <= 0) return 0;
+      return Math.round((chars / 5) / (ms / 60000));
+    },
+
+    /** Accuracy = correct keystrokes / total accepted keystrokes, in [0, 1]. */
+    computeAccuracy(correctKeystrokes, totalKeystrokes) {
+      if (!(totalKeystrokes > 0)) return 0;
+      return clamp(correctKeystrokes / totalKeystrokes, 0, 1);
+    },
+
+    comboMultiplier(combo) {
+      const c = SCORE_WEIGHTS.combo;
+      return Math.min(c.maxMultiplier, 1 + Math.floor(clamp(combo, 0, 1e6) / c.stepEvery) * c.stepSize);
+    },
+
+    typingLevelPoints({ wpm, accuracy, comboPoints, isBoss }) {
+      const w = SCORE_WEIGHTS.typing;
+      const acc = clamp(accuracy, 0, 1);
+      const raw = clamp(wpm, 0, w.maxWpm) * w.pointsPerWpm * acc * acc + clamp(comboPoints, 0, 1e5) * w.comboPointValue;
+      return Math.round(raw * (isBoss ? w.bossMultiplier : 1));
+    },
+
+    questionPoints({ category, correct, secondsLeft, timeLimitSec }) {
+      const weights = SCORE_WEIGHTS.questions[category];
+      if (!weights || !correct) return 0;
+      const left = clamp(secondsLeft, 0, clamp(timeLimitSec, 0, 600));
+      return Math.round(weights.base + left * weights.perSecondLeft);
+    },
+
+    completionBonus(activeSeconds) {
+      const c = SCORE_WEIGHTS.completion;
+      const seconds = clamp(activeSeconds, 0, c.maxSeconds);
+      return Math.round(clamp(c.maxBonus - Math.max(0, seconds - c.parSeconds) * c.penaltyPerSecond, 0, c.maxBonus));
+    },
+
+    /**
+     * The competitive score. `modifiers` comes from PLAYER_RULES[...].scoring.
+     * Input: { typingLevels:[{wpm,accuracy,comboPoints,isBoss}], questions:[{category,correct,secondsLeft,timeLimitSec}],
+     *          completedLevels, totalLevels, activeSeconds }
+     */
+    computeScore(input, modifiers = {}) {
+      const m = { typingScoreMultiplier: 1, riddleScoreMultiplier: 1, hiddenLevelBonus: 0, ...modifiers };
+      const typingLevels = Array.isArray(input.typingLevels) ? input.typingLevels : [];
+      const questions = Array.isArray(input.questions) ? input.questions : [];
+      const completedLevels = clamp(Math.floor(input.completedLevels || 0), 0, 100);
+      const totalLevels = clamp(Math.floor(input.totalLevels || GAME_CONFIG.levels.length), 1, 100);
+
+      const typingBase = typingLevels.reduce((sum, level) => sum + Scoring.typingLevelPoints(level), 0);
+      const questionBase = (category) => questions
+        .filter((q) => q.category === category)
+        .reduce((sum, q) => sum + Scoring.questionPoints(q), 0);
+
+      const breakdown = {
+        typing: Math.round(typingBase * m.typingScoreMultiplier),
+        logic: Math.round(questionBase('riddle') * m.riddleScoreMultiplier),
+        debugging: Math.round(questionBase('debug') * m.riddleScoreMultiplier),
+        incident: Math.round(questionBase('incident') * m.riddleScoreMultiplier),
+        levelClears: completedLevels * (SCORE_WEIGHTS.levelClearBonus + m.hiddenLevelBonus),
+        speed: completedLevels >= totalLevels ? Scoring.completionBonus(input.activeSeconds) : 0,
+      };
+      const total = Object.values(breakdown).reduce((a, b) => a + b, 0);
+      return { total, breakdown };
+    },
+
+    rankTitle(score) {
+      let title = GAME_CONFIG.rankTitles[0].title;
+      for (const tier of GAME_CONFIG.rankTitles) if (score >= tier.minScore) title = tier.title;
+      return title;
+    },
+  };
+
+  /* =====================================================================
+     5. LEADERBOARD — storage adapter + ranking.
+     Swap `LeaderboardService.backend` for an API-backed object with the
+     same async list/submit/clear methods to add a real global board.
+     ===================================================================== */
+  function normalizeEntry(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    const name = sanitizeNickname(raw.name);
+    if (!name || typeof raw.id !== 'string' || !/^[\w-]{3,64}$/.test(raw.id)) return null;
+    const score = Number(raw.score), wpm = Number(raw.wpm), accuracy = Number(raw.accuracy);
+    if (![score, wpm, accuracy].every(Number.isFinite)) return null;
+    return {
+      id: raw.id,
+      name,
+      score: Math.round(clamp(score, 0, 1e6)),
+      wpm: Math.round(clamp(wpm, 0, 400)),
+      accuracy: clamp(accuracy, 0, 1),
+      createdAt: Number.isFinite(Number(raw.createdAt)) ? Number(raw.createdAt) : 0,
+      demo: raw.demo === true,
+    };
+  }
+
+  /** Sort: score ↓, accuracy ↓, WPM ↓, earlier first, name. Rank = position. */
+  function rankEntries(entries) {
+    return entries
+      .slice()
+      .sort((a, b) => (b.score - a.score) || (b.accuracy - a.accuracy) || (b.wpm - a.wpm) || (a.createdAt - b.createdAt) || a.name.localeCompare(b.name))
+      .map((entry, index) => ({ ...entry, rank: index + 1 }));
+  }
+
+  const LocalLeaderboardBackend = {
+    label: 'Local leaderboard',
+    async list() {
+      const raw = Storage.get(GAME_CONFIG.storageKeys.leaderboard, []);
+      return Array.isArray(raw) ? raw.map(normalizeEntry).filter((e) => e && !e.demo) : [];
+    },
+    async submit(entry) {
+      const clean = normalizeEntry(entry);
+      if (!clean) return { accepted: false, reason: 'invalid' };
+      const entries = await this.list();
+      if (entries.some((e) => e.id === clean.id)) return { accepted: false, reason: 'duplicate' };
+      entries.push(clean);
+      const kept = rankEntries(entries).slice(0, 200).map(({ rank, ...rest }) => rest);
+      const saved = Storage.set(GAME_CONFIG.storageKeys.leaderboard, kept);
+      return saved ? { accepted: true } : { accepted: false, reason: 'storage' };
+    },
+    async clear() {
+      Storage.remove(GAME_CONFIG.storageKeys.leaderboard);
+      Storage.remove(GAME_CONFIG.storageKeys.lastEntryId);
+    },
+  };
+
+  const LeaderboardService = {
+    backend: LocalLeaderboardBackend,
+    async standings() {
+      return rankEntries([...DEMO_COMPETITORS, ...(await this.backend.list())]);
+    },
+    submit(entry) { return this.backend.submit(entry); },
+    clear() { return this.backend.clear(); },
+    /** Optional read-only board from a committed JSON file next to index.html. */
+    async sharedStandings() {
+      if (location.protocol === 'file:') return null;
+      try {
+        const response = await fetch(GAME_CONFIG.sharedLeaderboardUrl, { cache: 'no-store' });
+        if (!response.ok) return null;
+        const data = await response.json();
+        const list = Array.isArray(data) ? data : Array.isArray(data && data.entries) ? data.entries : [];
+        const entries = list.slice(0, 100).map((e, i) => normalizeEntry({ createdAt: i, ...e, id: `shared-${i}` })).filter(Boolean);
+        return entries.length ? rankEntries(entries) : null;
+      } catch (error) {
+        return null;
+      }
+    },
+  };
+
+  /* =====================================================================
+     6. SHARING — links and URL parameter validation.
+     ===================================================================== */
+  const ShareService = {
+    MAX_CLAIM: 999999,
+
+    gameBaseUrl() {
+      // Directory of the current page, so project subpaths like /cto-challenge/ keep working.
+      const url = new URL('./', location.href);
+      url.search = '';
+      url.hash = '';
+      return url;
+    },
+
+    buildChallengeUrl({ nickname, score, challengeId, messageIndex }) {
+      const url = this.gameBaseUrl();
+      url.searchParams.set('c', challengeId);
+      url.searchParams.set('from', nickname);
+      url.searchParams.set('claim', String(Math.round(clamp(score, 0, this.MAX_CLAIM))));
+      url.searchParams.set('m', String(messageIndex));
+      return url.toString();
+    },
+
+    /** Parses an incoming challenge link. Everything is validated; invalid links are ignored. */
+    parseChallenge(search) {
+      const params = new URLSearchParams(search);
+      const from = sanitizeNickname(params.get('from'));
+      const claimRaw = params.get('claim') || '';
+      const claim = /^\d{1,6}$/.test(claimRaw) ? Number(claimRaw) : null;
+      if (!from || claim == null || claim > this.MAX_CLAIM) return null;
+      const idRaw = params.get('c') || '';
+      const mRaw = params.get('m') || '';
+      const messageIndex = /^\d$/.test(mRaw) && Number(mRaw) < GAME_CONFIG.challengeMessages.length ? Number(mRaw) : 0;
+      return {
+        from,
+        claim,
+        challengeId: /^[A-Za-z0-9]{4,24}$/.test(idRaw) ? idRaw : null,
+        message: GAME_CONFIG.challengeMessages[messageIndex],
+        verified: false,
+      };
+    },
+
+    async copyText(text) {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+      } catch (error) { /* fall through to the legacy path */ }
+      const area = el('textarea', { readonly: true, style: 'position:fixed;top:-1000px;opacity:0' });
+      area.value = text;
+      document.body.append(area);
+      area.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (error) { ok = false; }
+      area.remove();
+      return ok;
+    },
+  };
+
+  /* =====================================================================
+     7. TIMERS — countdown with optional invisible assistance.
+     ===================================================================== */
+  class Countdown {
+    constructor({ durationSec, assistFactor = 0, onTick, onExpire }) {
+      this.durationSec = durationSec;
+      this.scale = 1 + clamp(assistFactor, 0, 1);
+      this.realDurationMs = durationSec * 1000 * this.scale;
+      this.onTick = onTick;
+      this.onExpire = onExpire;
+      this.intervalId = null;
+      this.startedAt = 0;
+      this.stopped = false;
+    }
+    start() {
+      this.startedAt = Date.now();
+      this.intervalId = setInterval(() => this.tick(), 100);
+      this.tick();
+    }
+    elapsedRealMs() { return this.startedAt ? Date.now() - this.startedAt : 0; }
+    remainingRealMs() { return Math.max(0, this.realDurationMs - this.elapsedRealMs()); }
+    /** Seconds as shown to the player (the assist is invisible). */
+    displaySecondsLeft() { return this.remainingRealMs() / this.scale / 1000; }
+    tick() {
+      if (this.stopped) return;
+      const left = this.displaySecondsLeft();
+      if (this.onTick) this.onTick(left, left / this.durationSec);
+      if (this.remainingRealMs() <= 0) {
+        this.stop();
+        if (this.onExpire) this.onExpire();
+      }
+    }
+    stop() {
+      this.stopped = true;
+      if (this.intervalId) clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  /* =====================================================================
+     8. INPUT INTERFERENCE — only ever consulted by the typing field.
+     ===================================================================== */
+  class InputInterference {
+    constructor(rules, random, isBoss) {
+      this.config = rules.inputInterference;
+      this.random = random;
+      this.intensity = isBoss ? this.config.bossIntensity : 1;
+      this.glitchesShown = 0;
+      this.baseRate = this.config.enabled
+        ? (this.config.rejectRateMin + (this.config.rejectRateMax - this.config.rejectRateMin) * random()) * this.intensity
+        : 0;
+    }
+    get enabled() { return this.config.enabled === true; }
+    rejectProbability(progress) {
+      if (!this.enabled) return 0;
+      const start = this.config.finalStretchStart;
+      const stretch = progress > start ? (progress - start) / (1 - start) : 0;
+      return Math.min(this.config.maxRejectRate, this.baseRate + stretch * this.config.finalStretchExtraRate * this.intensity);
+    }
+    shouldRejectKeystroke(progress) {
+      if (!this.enabled) return false;
+      return this.random() < this.rejectProbability(progress);
+    }
+    feedbackDelayMs() {
+      if (!this.enabled || this.config.feedbackDelayChance <= 0) return 0;
+      if (this.random() >= this.config.feedbackDelayChance) return 0;
+      const { feedbackDelayMinMs: min, feedbackDelayMaxMs: max } = this.config;
+      return Math.round(min + (max - min) * this.random());
+    }
+    glitchNotice() {
+      if (!this.enabled || this.config.glitchNoticeChance <= 0 || this.glitchesShown >= this.config.glitchNoticeMaxPerLevel) return null;
+      if (this.random() >= this.config.glitchNoticeChance) return null;
+      this.glitchesShown += 1;
+      const notices = PLAYER_RULES.glitchNotices;
+      return notices[Math.floor(this.random() * notices.length) % notices.length];
+    }
+  }
+
+  /* =====================================================================
+     9. CODE HIGHLIGHTING (built from DOM nodes, never from HTML strings)
+     ===================================================================== */
+  const JS_KEYWORDS = new Set(['const', 'let', 'var', 'function', 'return', 'async', 'await', 'for', 'of', 'in', 'if', 'else', 'new', 'class', 'typeof', 'true', 'false', 'null', 'undefined', 'this']);
+  const TOKEN_PATTERN = /(\/\/.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|(\s+)|([^\sA-Za-z_$\d"'`]+)/g;
+
+  function highlightLine(line) {
+    const fragment = document.createDocumentFragment();
+    TOKEN_PATTERN.lastIndex = 0;
+    let match;
+    while ((match = TOKEN_PATTERN.exec(line)) !== null) {
+      const [token, comment, string, number, identifier, space] = match;
+      let cls = 'tok-punc';
+      if (comment) cls = 'tok-com';
+      else if (string) cls = 'tok-str';
+      else if (number) cls = 'tok-num';
+      else if (identifier) cls = JS_KEYWORDS.has(identifier) ? 'tok-kw' : (line[TOKEN_PATTERN.lastIndex] === '(' ? 'tok-fn' : '');
+      else if (space) cls = '';
+      fragment.append(cls ? el('span', { class: cls, text: token }) : document.createTextNode(token));
+    }
+    return fragment;
+  }
+
+  function renderCodeWindow(lines, fileName) {
+    return el('div', { class: 'code-window' }, [
+      el('div', { class: 'code-titlebar', 'aria-hidden': 'true' }, [el('span', { class: 'dot' }), el('span', { class: 'dot' }), el('span', { class: 'dot' }), el('span', { class: 'file', text: fileName })]),
+      el('ol', { class: 'code', 'aria-label': `Code: ${fileName}` }, lines.map((line) => el('li', {}, highlightLine(line)))),
+    ]);
+  }
+
+  /* =====================================================================
+     10. EFFECTS: toasts, achievements, particles, matrix, modal, motion
+     ===================================================================== */
+  const Motion = {
+    reduced: false,
+    init() {
+      const stored = Storage.get(GAME_CONFIG.storageKeys.motion, null);
+      const systemPrefers = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      this.set(stored === 'reduced' ? true : stored === 'full' ? false : systemPrefers, false);
+      $('#motion-toggle').addEventListener('click', () => this.set(!this.reduced, true));
+    },
+    set(reduced, persist) {
+      this.reduced = reduced;
+      document.documentElement.dataset.motion = reduced ? 'reduced' : 'full';
+      const toggle = $('#motion-toggle');
+      toggle.setAttribute('aria-pressed', String(reduced));
+      toggle.textContent = `Reduce motion: ${reduced ? 'on' : 'off'}`;
+      if (persist) Storage.set(GAME_CONFIG.storageKeys.motion, reduced ? 'reduced' : 'full');
+      Particles.refresh();
+    },
+  };
+
+  const Toasts = {
+    show({ icon = '🏅', title, text, variant = '' }) {
+      const toast = el('div', { class: `toast ${variant}`.trim(), role: 'status' }, [
+        el('span', { class: 't-icon', 'aria-hidden': 'true', text: icon }),
+        el('div', {}, [el('strong', { text: title }), text ? el('span', { class: 'muted', text }) : null]),
+      ]);
+      const host = $('#toasts');
+      host.append(toast);
+      while (host.children.length > 4) host.firstElementChild.remove();
+      setTimeout(() => toast.remove(), 4200);
+    },
+  };
+
+  const ACHIEVEMENTS = {
+    flowState: { icon: '⚡', title: 'Flow State', description: '25 correct keystrokes in a row.' },
+    speedDemon: { icon: '🏎️', title: 'Speed Demon', description: 'Finished a typing level at 80+ WPM.' },
+    eventLoopWhisperer: { icon: '🔁', title: 'Event Loop Whisperer', description: 'Microtasks before macrotasks.' },
+    logicGateKeeper: { icon: '🧠', title: 'Logic Gate Keeper', description: 'All five riddles correct.' },
+    semicolonSommelier: { icon: '🍷', title: 'Semicolon Sommelier', description: 'Spotted automatic semicolon insertion.' },
+    incidentCommander: { icon: '🚒', title: 'Incident Commander', description: 'Diagnosed and fixed the P0.' },
+    seniorStackOverflow: { icon: '🎓', title: 'Senior Stack Overflow Engineer', description: 'Completed every level of CTO.exe.' },
+    cheatCodeEnjoyer: { icon: '🕹️', title: 'Cheat Code Enjoyer', description: 'Entered the Konami code.' },
+    readsReleaseNotes: { icon: '📜', title: 'Reads Release Notes', description: 'Statistically rare behaviour.' },
+  };
+
+  const Particles = {
+    canvas: null, ctx: null, dots: [], frame: null,
+    init() {
+      this.canvas = $('#particles');
+      this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
+      window.addEventListener('resize', () => this.resize());
+      document.addEventListener('visibilitychange', () => this.refresh());
+      this.resize();
+    },
+    resize() {
+      if (!this.ctx) return;
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      this.canvas.width = Math.floor(window.innerWidth * ratio);
+      this.canvas.height = Math.floor(window.innerHeight * ratio);
+      this.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      const count = Math.round(Math.min(60, (window.innerWidth * window.innerHeight) / 26000));
+      this.dots = Array.from({ length: count }, () => ({
+        x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25,
+        r: Math.random() * 1.6 + 0.4, hue: Math.random() < 0.5 ? '34, 211, 238' : '168, 85, 247',
+      }));
+      this.refresh();
+    },
+    refresh() {
+      if (!this.ctx) return;
+      const shouldRun = !Motion.reduced && !document.hidden;
+      if (shouldRun && !this.frame) this.frame = requestAnimationFrame(() => this.draw());
+      if (!shouldRun && this.frame) { cancelAnimationFrame(this.frame); this.frame = null; }
+      if (!shouldRun) this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    },
+    draw() {
+      const { ctx } = this;
+      const w = window.innerWidth, h = window.innerHeight;
+      ctx.clearRect(0, 0, w, h);
+      for (const d of this.dots) {
+        d.x = (d.x + d.vx + w) % w;
+        d.y = (d.y + d.vy + h) % h;
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(${d.hue}, 0.7)`;
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      for (let i = 0; i < this.dots.length; i++) {
+        for (let j = i + 1; j < this.dots.length; j++) {
+          const a = this.dots[i], b = this.dots[j];
+          const dist = Math.hypot(a.x - b.x, a.y - b.y);
+          if (dist < 110) {
+            ctx.strokeStyle = `rgba(148, 163, 184, ${0.12 * (1 - dist / 110)})`;
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+      }
+      this.frame = requestAnimationFrame(() => this.draw());
+    },
+  };
+
+  const Modal = {
+    returnFocus: null,
+    init() {
+      $('#modal-close').addEventListener('click', () => this.close());
+      $('#modal-backdrop').addEventListener('click', (event) => { if (event.target.id === 'modal-backdrop') this.close(); });
+    },
+    open(title, bodyNodes) {
+      this.returnFocus = document.activeElement;
+      $('#modal-title').textContent = title;
+      $('#modal-body').replaceChildren(...bodyNodes);
+      $('#modal-backdrop').hidden = false;
+      $('#modal-close').focus();
+    },
+    close() {
+      if ($('#modal-backdrop').hidden) return;
+      $('#modal-backdrop').hidden = true;
+      if (this.returnFocus && this.returnFocus.focus) this.returnFocus.focus();
+    },
+    get isOpen() { return !$('#modal-backdrop').hidden; },
+  };
+
+  const Matrix = {
+    overlay: null, frame: null, timeoutId: null,
+    open() {
+      if (this.overlay) return;
+      const canvas = el('canvas', { 'aria-hidden': 'true' });
+      const closeBtn = el('button', { type: 'button', class: 'btn', text: 'Exit the Matrix', onclick: () => this.close() });
+      this.overlay = el('div', { id: 'matrix-overlay', class: 'matrix-overlay', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Matrix mode' }, [
+        canvas,
+        el('div', { class: 'matrix-msg' }, [el('div', { text: 'Wake up, engineer…' }), el('div', { class: 'small', text: 'The benchmark has you.' }), closeBtn]),
+      ]);
+      document.body.append(this.overlay);
+      closeBtn.focus();
+      if (!Motion.reduced) this.animate(canvas);
+      this.timeoutId = setTimeout(() => this.close(), 7000);
+    },
+    animate(canvas) {
+      const ctx = canvas.getContext && canvas.getContext('2d');
+      if (!ctx) return;
+      canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+      const glyphs = '01アイウエオカキクケコサシスセソ{}<>/=;$#'.split('');
+      const size = 16;
+      const drops = Array.from({ length: Math.ceil(canvas.width / size) }, () => Math.random() * -50);
+      const draw = () => {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#22c55e';
+        ctx.font = `${size}px monospace`;
+        drops.forEach((y, i) => {
+          ctx.fillText(glyphs[Math.floor(Math.random() * glyphs.length)], i * size, y * size);
+          drops[i] = y * size > canvas.height && Math.random() > 0.975 ? 0 : y + 1;
+        });
+        this.frame = requestAnimationFrame(draw);
+      };
+      draw();
+    },
+    close() {
+      if (!this.overlay) return;
+      if (this.frame) cancelAnimationFrame(this.frame);
+      clearTimeout(this.timeoutId);
+      this.overlay.remove();
+      this.overlay = null; this.frame = null;
+    },
+  };
+
+  /* =====================================================================
+     11. LEVEL CONTROLLERS
+     ===================================================================== */
+  class TypingLevel {
+    constructor(game, level) {
+      this.game = game;
+      this.level = level;
+      this.passage = level.passage;
+      this.interference = new InputInterference(game.state.rules, game.prankRandom, level.isBoss);
+      this.stats = { keystrokes: 0, correctKeystrokes: 0, combo: 0, maxCombo: 0, comboPoints: 0, firstKeyAt: 0 };
+      this.finished = false;
+      this.pendingDelayMs = 0;
+      this.delayTimer = null;
+      this.countdownTimers = [];
+      this.timer = null;
+      this.startedAt = 0;
+    }
+
+    mount(container) {
+      this.charSpans = Array.from(this.passage, (ch) => el('span', { class: 'ch', text: ch }));
+      this.passageEl = el('div', { id: 'passage', class: 'passage', 'aria-hidden': 'true' }, this.charSpans);
+      this.countdownEl = el('div', { id: 'countdown', class: 'countdown', 'aria-live': 'assertive' });
+      this.input = el('input', {
+        type: 'text', id: 'typing-input', autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off',
+        spellcheck: 'false', maxlength: String(this.passage.length), disabled: true, 'aria-describedby': 'typing-help',
+        enterkeyhint: 'done',
+      });
+      this.progressEl = el('div', { id: 'typing-progress' });
+      const stat = (id, label, value) => el('div', { class: 'stat' }, [el('div', { class: 'label', text: label }), el('div', { class: 'value', id, text: value })]);
+      container.replaceChildren(
+        el('p', { class: 'muted small', id: 'typing-help', text: this.level.isBoss
+          ? 'Type as much as you can before the timer hits zero. Mistakes break your combo. Copy/paste is disabled.'
+          : 'Type the passage exactly. Mistakes break your combo and must be fixed to finish. Copy/paste is disabled.' }),
+        el('p', { class: 'sr-only', text: `Passage: ${this.passage}` }),
+        el('div', { class: 'passage-wrap' }, [this.passageEl, this.countdownEl]),
+        el('div', { class: 'progress', 'aria-hidden': 'true' }, this.progressEl),
+        el('div', { class: 'typing-input-row' }, [el('label', { for: 'typing-input', class: 'sr-only', text: 'Type the passage here' }), this.input]),
+        el('div', { class: 'stat-grid' }, [
+          stat('stat-wpm', 'WPM', '0'), stat('stat-accuracy', 'Accuracy', '100.0%'), stat('stat-keystrokes', 'Keystrokes', '0'),
+          stat('stat-combo', 'Combo', '×1.0'), stat('stat-errors', 'Errors', '0'),
+        ]),
+      );
+
+      this.input.addEventListener('beforeinput', (event) => this.onBeforeInput(event));
+      this.input.addEventListener('input', () => this.onInput());
+      this.input.addEventListener('paste', (event) => event.preventDefault());
+      this.input.addEventListener('drop', (event) => event.preventDefault());
+      this.input.addEventListener('click', () => this.keepCaretAtEnd());
+      this.game.hud.setTimer(this.level.timeLimitSec, 1);
+      this.render();
+      this.runCountdown();
+    }
+
+    runCountdown() {
+      const steps = GAME_CONFIG.countdownSteps;
+      steps.forEach((label, index) => {
+        this.countdownTimers.push(setTimeout(() => {
+          this.countdownEl.replaceChildren(el('span', { text: label }));
+        }, index * GAME_CONFIG.countdownStepMs));
+      });
+      this.countdownTimers.push(setTimeout(() => this.begin(), steps.length * GAME_CONFIG.countdownStepMs));
+    }
+
+    begin() {
+      this.countdownEl.hidden = true;
+      this.input.disabled = false;
+      this.input.focus();
+      this.startedAt = Date.now();
+      this.timer = new Countdown({
+        durationSec: this.level.timeLimitSec,
+        assistFactor: this.game.state.rules.timing.timerAssistFactor,
+        onTick: (left, fraction) => { this.game.hud.setTimer(left, fraction); this.updateLiveStats(); },
+        onExpire: () => this.finish('timeout'),
+      });
+      this.timer.start();
+    }
+
+    keepCaretAtEnd() {
+      const end = this.input.value.length;
+      this.input.setSelectionRange(end, end);
+    }
+
+    correctPrefixLength(text) {
+      let i = 0;
+      while (i < text.length && i < this.passage.length && text[i] === this.passage[i]) i++;
+      return i;
+    }
+
+    onBeforeInput(event) {
+      if (this.finished || this.input.disabled) { event.preventDefault(); return; }
+      const type = event.inputType || '';
+      if (type === 'insertFromPaste' || type === 'insertFromDrop' || type === 'insertFromYank') { event.preventDefault(); return; }
+      if (!type.startsWith('insert') || typeof event.data !== 'string' || event.data.length === 0) return;
+
+      const value = this.input.value;
+      const caret = this.input.selectionStart == null ? value.length : this.input.selectionStart;
+      if (value.length >= this.passage.length && this.input.selectionStart === this.input.selectionEnd) return;
+
+      const progress = this.correctPrefixLength(value) / this.passage.length;
+      const isPrintableKeystroke = type === 'insertText' && event.data.length === 1;
+      if (isPrintableKeystroke && this.interference.shouldRejectKeystroke(progress)) {
+        event.preventDefault();
+        this.game.state.prankStats.rejectedKeystrokes += 1;
+        return;
+      }
+
+      if (!this.stats.firstKeyAt) this.stats.firstKeyAt = Date.now();
+      let prefixOk = value.slice(0, caret) === this.passage.slice(0, caret);
+      Array.from(event.data).forEach((ch, offset) => {
+        const correct = prefixOk && ch === this.passage[caret + offset];
+        this.recordKeystroke(correct);
+        if (!correct) prefixOk = false;
+      });
+
+      if (isPrintableKeystroke) {
+        this.pendingDelayMs = this.interference.feedbackDelayMs();
+        if (this.pendingDelayMs > 0) this.game.state.prankStats.delayedFrames += 1;
+        const notice = this.interference.glitchNotice();
+        if (notice) {
+          this.game.state.prankStats.glitchNotices += 1;
+          Toasts.show({ icon: '⚠️', title: 'Input subsystem', text: notice, variant: 'glitch' });
+          if (!Motion.reduced) { this.passageEl.classList.add('glitch-flash'); setTimeout(() => this.passageEl.classList.remove('glitch-flash'), 600); }
+        }
+      }
+    }
+
+    recordKeystroke(correct) {
+      const s = this.stats;
+      s.keystrokes += 1;
+      if (correct) {
+        s.correctKeystrokes += 1;
+        s.combo += 1;
+        s.maxCombo = Math.max(s.maxCombo, s.combo);
+        s.comboPoints += Scoring.comboMultiplier(s.combo);
+        if (s.combo >= 25) this.game.unlock('flowState');
+      } else {
+        s.combo = 0;
+      }
+    }
+
+    onInput() {
+      if (this.finished) return;
+      if (this.input.value === this.passage) {
+        this.render();
+        this.finish('complete');
+        return;
+      }
+      const delay = this.pendingDelayMs;
+      this.pendingDelayMs = 0;
+      if (delay > 0 && !this.delayTimer) {
+        this.delayTimer = setTimeout(() => { this.delayTimer = null; this.render(); }, delay);
+      } else if (!this.delayTimer) {
+        this.render();
+      }
+    }
+
+    elapsedTypingMs() {
+      if (!this.stats.firstKeyAt) return 0;
+      return (this.finishedAt || Date.now()) - this.stats.firstKeyAt;
+    }
+
+    snapshot() {
+      const correctChars = this.correctPrefixLength(this.input ? this.input.value : '');
+      const elapsedMs = this.elapsedTypingMs();
+      return {
+        correctChars,
+        elapsedMs,
+        wpm: Scoring.computeWpm(correctChars, elapsedMs),
+        accuracy: Scoring.computeAccuracy(this.stats.correctKeystrokes, this.stats.keystrokes),
+        keystrokes: this.stats.keystrokes,
+        correctKeystrokes: this.stats.correctKeystrokes,
+        maxCombo: this.stats.maxCombo,
+        comboPoints: this.stats.comboPoints,
+      };
+    }
+
+    updateLiveStats() {
+      const snap = this.snapshot();
+      $('#stat-wpm').textContent = String(snap.wpm);
+      $('#stat-accuracy').textContent = snap.keystrokes ? formatPct(snap.accuracy) : '100.0%';
+      $('#stat-keystrokes').textContent = formatInt(snap.keystrokes);
+      const multiplier = Scoring.comboMultiplier(this.stats.combo);
+      const comboEl = $('#stat-combo');
+      comboEl.textContent = `×${multiplier.toFixed(1)}`;
+      comboEl.classList.toggle('combo-hot', multiplier >= 2);
+    }
+
+    render() {
+      const typed = this.input.value;
+      let errors = 0;
+      let broken = false;
+      for (let i = 0; i < this.charSpans.length; i++) {
+        let cls = 'ch';
+        if (i < typed.length) {
+          if (!broken && typed[i] === this.passage[i]) cls += ' ok';
+          else { cls += ' bad'; broken = true; errors++; }
+        } else if (i === typed.length) {
+          cls += ' cur';
+        }
+        if (this.charSpans[i].className !== cls) this.charSpans[i].className = cls;
+      }
+      $('#stat-errors').textContent = String(errors);
+      this.progressEl.style.width = `${(this.correctPrefixLength(typed) / this.passage.length) * 100}%`;
+      this.updateLiveStats();
+    }
+
+    finish(reason) {
+      if (this.finished) return;
+      this.finished = true;
+      this.finishedAt = this.stats.firstKeyAt ? Date.now() : 0;
+      if (this.timer) this.timer.stop();
+      clearTimeout(this.delayTimer);
+      this.delayTimer = null;
+      this.input.disabled = true;
+      this.render();
+      const snap = this.snapshot();
+      if (snap.wpm >= 80) this.game.unlock('speedDemon');
+      this.game.completeLevel({
+        type: 'typing', reason, isBoss: !!this.level.isBoss,
+        ...snap,
+        completedPassage: this.input.value === this.passage,
+        durationMs: Date.now() - (this.startedAt || Date.now()),
+      });
+    }
+
+    destroy() {
+      this.countdownTimers.forEach(clearTimeout);
+      clearTimeout(this.delayTimer);
+      if (this.timer) this.timer.stop();
+      this.finished = true;
+    }
+  }
+
+  class QuizLevel {
+    constructor(game, level) {
+      this.game = game;
+      this.level = level;
+      this.questions = level.questionSet === 'incident' ? GAME_CONFIG.incident.questions : GAME_CONFIG[level.questionSet];
+      this.index = -1;
+      this.correctCount = 0;
+      this.timer = null;
+      this.answered = false;
+      this.startedAt = 0;
+      this.keyHandler = (event) => this.onKey(event);
+    }
+
+    mount(container) {
+      this.container = container;
+      this.startedAt = Date.now();
+      const children = [];
+      if (this.level.questionSet === 'incident') children.push(this.renderIncidentBoard());
+      this.questionHost = el('div', { id: 'question-host' });
+      children.push(this.questionHost);
+      container.replaceChildren(...children);
+      document.addEventListener('keydown', this.keyHandler);
+      this.showQuestion(0);
+    }
+
+    renderIncidentBoard() {
+      const inc = GAME_CONFIG.incident;
+      return el('div', { class: 'incident-grid' }, [
+        el('div', {}, [
+          el('div', { class: 'eyebrow', text: 'Active alerts' }),
+          el('div', { class: 'alerts', style: 'margin-top:8px' }, inc.alerts.map((a) => el('div', { class: `alert ${a.className}` }, [el('span', { class: 'sev', text: a.severity }), el('span', { text: a.text })]))),
+          el('div', { class: 'eyebrow', style: 'margin-top:14px', text: 'Last deployment' }),
+          el('div', { class: 'deploy-card', style: 'margin-top:8px' }, [
+            el('dl', {}, [
+              el('dt', { text: 'service' }), el('dd', { text: inc.deploy.service }),
+              el('dt', { text: 'version' }), el('dd', { text: `${inc.deploy.version} (${inc.deploy.commit})` }),
+              el('dt', { text: 'message' }), el('dd', { text: inc.deploy.message }),
+              el('dt', { text: 'deployed' }), el('dd', { text: inc.deploy.when }),
+            ]),
+            el('div', { class: 'diff', 'aria-label': 'Deployment diff' }, inc.deploy.diff.map((d) => el('div', { class: d.kind, text: d.text }))),
+          ]),
+        ]),
+        el('div', {}, [
+          el('div', { class: 'eyebrow', text: 'orders-svc · live logs' }),
+          el('div', { class: 'terminal log-terminal', style: 'margin-top:8px', tabindex: '0', 'aria-label': 'Server logs' }, inc.logs.map((l) => el('div', { class: `line ${l.level}`, text: l.text }))),
+        ]),
+      ]);
+    }
+
+    showQuestion(index) {
+      this.index = index;
+      this.answered = false;
+      const q = this.questions[index];
+      this.optionButtons = q.options.map((text, i) => el('button', {
+        type: 'button', class: 'answer-option', dataset: { index: String(i) }, onclick: () => this.answer(i),
+      }, [el('span', { class: 'key', 'aria-hidden': 'true', text: String(i + 1) }), el('span', { text })]));
+      this.feedbackHost = el('div', { id: 'feedback-host' });
+      this.outputLine = q.output != null ? el('div', { class: 'line cursor-blink', id: 'terminal-output' }) : null;
+      this.questionHost.replaceChildren(...[
+        el('div', { class: 'question-meta' }, [
+          el('span', { id: 'question-counter', text: `Question ${index + 1} of ${this.questions.length}` }),
+          el('span', { text: 'Keys 1–4 answer · Enter continues' }),
+        ]),
+        el('p', { class: 'question-prompt', id: 'question-prompt', text: q.prompt }),
+        q.code ? renderCodeWindow(q.code, q.file || 'riddle.js') : null,
+        q.output != null ? el('div', { class: 'terminal code-output' }, [el('div', { class: 'line dim', text: `$ node ${q.file || 'snippet.js'}` }), this.outputLine]) : null,
+        el('div', { class: 'options', role: 'group', 'aria-label': 'Answers' }, this.optionButtons),
+        this.feedbackHost,
+      ].filter(Boolean));
+      if (this.timer) this.timer.stop();
+      this.timer = new Countdown({
+        durationSec: q.timeLimitSec,
+        assistFactor: this.game.state.rules.timing.timerAssistFactor,
+        onTick: (left, fraction) => this.game.hud.setTimer(left, fraction),
+        onExpire: () => this.answer(null),
+      });
+      this.timer.start();
+      this.optionButtons[0].focus({ preventScroll: true });
+    }
+
+    answer(choice) {
+      if (this.answered) return;
+      this.answered = true;
+      const q = this.questions[this.index];
+      const secondsLeft = this.timer ? this.timer.displaySecondsLeft() : 0;
+      if (this.timer) this.timer.stop();
+      const correct = choice === q.correctIndex;
+      if (correct) this.correctCount += 1;
+      this.optionButtons.forEach((button, i) => {
+        button.disabled = true;
+        if (i === q.correctIndex) button.classList.add('is-correct');
+        else if (i === choice) button.classList.add('is-wrong');
+      });
+      if (this.outputLine) { this.outputLine.textContent = q.output; this.outputLine.classList.remove('cursor-blink'); }
+
+      this.game.recordQuestion({
+        questionId: q.id, category: this.level.category, correct,
+        secondsLeft: correct ? secondsLeft : 0, timeLimitSec: q.timeLimitSec, timedOut: choice == null,
+      });
+      if (correct && q.achievement) this.game.unlock(q.achievement);
+
+      const quips = choice == null ? GAME_CONFIG.timeoutQuips : GAME_CONFIG.wrongAnswerQuips;
+      const verdict = correct ? `Correct! +${formatInt(this.game.lastQuestionPoints)} points` : quips[(this.index + (choice || 0)) % quips.length];
+      const isLast = this.index === this.questions.length - 1;
+      const nextButton = el('button', { type: 'button', id: 'quiz-next', class: 'btn btn-primary', text: isLast ? 'Finish level ▸' : 'Next question ▸', onclick: () => this.next() });
+      this.feedbackHost.replaceChildren(el('div', { class: `feedback ${correct ? 'good' : 'bad'}`, id: 'feedback', role: 'status' }, [
+        el('div', { class: 'verdict', text: verdict }),
+        el('p', { class: 'muted', text: q.explanation }),
+        el('div', { class: 'feedback-actions' }, nextButton),
+      ]));
+      nextButton.focus({ preventScroll: true });
+    }
+
+    next() {
+      if (!this.answered) return;
+      if (this.index < this.questions.length - 1) {
+        this.showQuestion(this.index + 1);
+        return;
+      }
+      this.destroy();
+      if (this.level.category === 'riddle' && this.correctCount === this.questions.length) this.game.unlock('logicGateKeeper');
+      if (this.level.category === 'incident' && this.correctCount === this.questions.length) this.game.unlock('incidentCommander');
+      this.game.completeLevel({
+        type: 'quiz', category: this.level.category, correctCount: this.correctCount, questionCount: this.questions.length,
+        durationMs: Date.now() - this.startedAt,
+      });
+    }
+
+    onKey(event) {
+      if (event.ctrlKey || event.metaKey || event.altKey || Modal.isOpen) return;
+      const target = event.target;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+      if (!this.answered && /^[1-4]$/.test(event.key)) {
+        const i = Number(event.key) - 1;
+        if (i < this.optionButtons.length) { event.preventDefault(); this.answer(i); }
+      }
+    }
+
+    destroy() {
+      if (this.timer) this.timer.stop();
+      document.removeEventListener('keydown', this.keyHandler);
+    }
+  }
+
+  /* =====================================================================
+     12. GAME CONTROLLER — state, flow, rendering of screens.
+     ===================================================================== */
+  const testHooks = window.__CTO_TEST_HOOKS__ && typeof window.__CTO_TEST_HOOKS__ === 'object' ? window.__CTO_TEST_HOOKS__ : null;
+
+  const Game = {
+    state: null,
+    prankRandom: null,
+    currentLevel: null,
+    lastQuestionPoints: 0,
+    returnScreen: 'intro',
+    leaderboardTab: 'local',
+    sharedStandings: null,
+
+    hud: {
+      setTimer(secondsLeft, fraction) {
+        const timer = $('#hud-timer');
+        timer.textContent = formatClock(secondsLeft);
+        timer.classList.toggle('low', secondsLeft <= 5 && secondsLeft > 0);
+        $('#hud-timer-bar').style.transform = `scaleX(${clamp(fraction, 0, 1)})`;
+      },
+      setScore(score) { $('#hud-score').textContent = formatInt(score); },
+      setLevel(index) {
+        const level = GAME_CONFIG.levels[index];
+        $('#hud-level').textContent = `Level ${index + 1} / ${GAME_CONFIG.levels.length}`;
+        $('#hud-title').textContent = level.title;
+        Array.from($('#hud-steps').children).forEach((step, i) => { step.className = i < index ? 'done' : i === index ? 'active' : ''; });
+      },
+    },
+
+    newState(nickname) {
+      return {
+        runId: createId('run'),
+        nickname,
+        rules: resolvePlayerRules(nickname),
+        levelIndex: 0,
+        levelResults: [],
+        questionResults: [],
+        achievements: [],
+        prankStats: { rejectedKeystrokes: 0, delayedFrames: 0, glitchNotices: 0 },
+        finished: false,
+        submission: null,
+        submittedRank: null,
+        challengeId: createId('c').replace(/[^A-Za-z0-9]/g, '').slice(0, 12),
+      };
+    },
+
+    showScreen(name, focusTarget) {
+      document.querySelectorAll('.screen').forEach((section) => { section.hidden = section.id !== `screen-${name}`; });
+      this.screen = name;
+      $('#open-leaderboard').disabled = name === 'level' || name === 'interlude';
+      window.scrollTo(0, 0);
+      const target = focusTarget || $(`#screen-${name} h2`) || $(`#screen-${name} h1`);
+      if (target) target.focus({ preventScroll: true });
+    },
+
+    start(nickname) {
+      if (this.currentLevel) this.currentLevel.destroy();
+      this.state = this.newState(nickname);
+      const seed = testHooks && Number.isInteger(testHooks.seed) ? testHooks.seed : randomUint32();
+      this.prankRandom = createSeededRandom(seed);
+      this.hud.setScore(0);
+      this.startLevel(0);
+    },
+
+    scoreInput() {
+      const s = this.state;
+      return {
+        typingLevels: s.levelResults.filter((r) => r.type === 'typing').map((r) => ({ wpm: r.wpm, accuracy: r.accuracy, comboPoints: r.comboPoints, isBoss: r.isBoss })),
+        questions: s.questionResults,
+        completedLevels: s.levelResults.length,
+        totalLevels: GAME_CONFIG.levels.length,
+        activeSeconds: s.levelResults.reduce((sum, r) => sum + r.durationMs, 0) / 1000,
+      };
+    },
+
+    currentScore() { return Scoring.computeScore(this.scoreInput(), this.state.rules.scoring); },
+
+    startLevel(index) {
+      const level = GAME_CONFIG.levels[index];
+      this.state.levelIndex = index;
+      this.state.scoreBeforeLevel = this.currentScore().total;
+      this.hud.setLevel(index);
+      this.showScreen('level');
+      const body = $('#level-body');
+      this.currentLevel = level.type === 'typing' ? new TypingLevel(this, level) : new QuizLevel(this, level);
+      this.currentLevel.mount(body);
+    },
+
+    recordQuestion(result) {
+      this.state.questionResults.push(result);
+      this.lastQuestionPoints = Math.round(Scoring.questionPoints(result) * this.state.rules.scoring.riddleScoreMultiplier);
+      this.hud.setScore(this.currentScore().total);
+    },
+
+    unlock(id) {
+      if (!this.state || this.state.achievements.includes(id) || !ACHIEVEMENTS[id]) return;
+      this.state.achievements.push(id);
+      const a = ACHIEVEMENTS[id];
+      Toasts.show({ icon: a.icon, title: `Achievement: ${a.title}`, text: a.description });
+    },
+
+    completeLevel(summary) {
+      const s = this.state;
+      const level = GAME_CONFIG.levels[s.levelIndex];
+      s.levelResults.push({ levelId: level.id, ...summary });
+      this.currentLevel = null;
+      const total = this.currentScore().total;
+      this.hud.setScore(total);
+      const isLast = s.levelIndex === GAME_CONFIG.levels.length - 1;
+      if (isLast) this.unlock('seniorStackOverflow');
+      this.renderInterlude(level, summary, total - s.scoreBeforeLevel, isLast);
+    },
+
+    renderInterlude(level, summary, points, isLast) {
+      const s = this.state;
+      $('#interlude-eyebrow').textContent = `Level ${s.levelIndex + 1} / ${GAME_CONFIG.levels.length} · ${level.title}`;
+      $('#interlude-title').textContent = summary.type === 'typing' && summary.reason === 'timeout' && !level.isBoss ? 'Time! Level closed' : isLast ? 'Benchmark complete' : 'Level cleared';
+      $('#interlude-quip').textContent = level.quips[s.levelResults.length % level.quips.length];
+      const stat = (label, value) => el('div', { class: 'stat' }, [el('div', { class: 'label', text: label }), el('div', { class: 'value', text: value })]);
+      const stats = summary.type === 'typing'
+        ? [stat('WPM', String(summary.wpm)), stat('Accuracy', formatPct(summary.accuracy)), stat('Keystrokes', formatInt(summary.keystrokes)), stat('Best combo', String(summary.maxCombo)), stat('Time', formatDuration(summary.elapsedMs / 1000))]
+        : [stat('Correct', `${summary.correctCount}/${summary.questionCount}`), stat('Time', formatDuration(summary.durationMs / 1000))];
+      stats.push(stat('Level points', `+${formatInt(points)}`));
+      $('#interlude-stats').replaceChildren(...stats);
+      $('#interlude-stats').querySelector('.stat:last-child .value').id = 'interlude-points';
+      const button = $('#interlude-continue');
+      button.textContent = isLast ? 'Compile results ▸' : `Next: ${GAME_CONFIG.levels[s.levelIndex + 1].title} ▸`;
+      this.showScreen('interlude', button);
+    },
+
+    continueFromInterlude() {
+      if (!this.state || this.screen !== 'interlude') return;
+      if (this.state.levelIndex < GAME_CONFIG.levels.length - 1) this.startLevel(this.state.levelIndex + 1);
+      else this.finishRun();
+    },
+
+    /* --------------------------- results ---------------------------- */
+    typingTotals() {
+      const typing = this.state.levelResults.filter((r) => r.type === 'typing');
+      const sum = (key) => typing.reduce((acc, r) => acc + r[key], 0);
+      const elapsedMs = sum('elapsedMs');
+      return {
+        wpm: Scoring.computeWpm(sum('correctChars'), elapsedMs),
+        accuracy: Scoring.computeAccuracy(sum('correctKeystrokes'), sum('keystrokes')),
+        keystrokes: sum('keystrokes'),
+        firstWpm: typing[0] ? typing[0].wpm : 0,
+        bossWpm: typing[1] ? typing[1].wpm : 0,
+      };
+    },
+
+    finishRun() {
+      const s = this.state;
+      s.finished = true;
+      const score = this.currentScore();
+      const typing = this.typingTotals();
+      s.final = { score: score.total, breakdown: score.breakdown, ...typing };
+      const correct = s.questionResults.filter((q) => q.correct).length;
+      const activeSeconds = this.scoreInput().activeSeconds;
+      s.final.correct = correct;
+      s.final.questionCount = s.questionResults.length;
+      s.final.activeSeconds = activeSeconds;
+
+      $('#results-player').textContent = s.nickname;
+      $('#final-rank-title').textContent = Scoring.rankTitle(score.total);
+      $('#result-wpm').textContent = String(typing.wpm);
+      $('#result-accuracy').textContent = formatPct(typing.accuracy);
+      $('#result-keystrokes').textContent = formatInt(typing.keystrokes);
+      $('#result-l1-wpm').textContent = String(typing.firstWpm);
+      $('#result-l5-wpm').textContent = String(typing.bossWpm);
+      $('#result-correct').textContent = `${correct}/${s.questionResults.length}`;
+      $('#result-time').textContent = formatDuration(activeSeconds);
+      $('#medal-rank').textContent = '—';
+
+      const labels = { typing: 'Typing', logic: 'Logic gate', debugging: 'Debugging', incident: 'Incident response', levelClears: 'Level clears', speed: 'Speed bonus' };
+      $('#score-breakdown').replaceChildren(...Object.entries(score.breakdown).map(([key, value]) => el('li', { dataset: { key } }, [el('span', { text: labels[key] }), el('span', { text: formatInt(value) })])));
+      $('#result-achievements').replaceChildren(...(s.achievements.length
+        ? s.achievements.map((id) => el('span', { class: 'badge', title: ACHIEVEMENTS[id].description }, [el('span', { 'aria-hidden': 'true', text: ACHIEVEMENTS[id].icon }), ACHIEVEMENTS[id].title]))
+        : [el('span', { class: 'muted small', text: 'None yet. The bar is on the floor and still out of reach.' })]));
+
+      $('#submit-score').disabled = false;
+      $('#submit-score').textContent = 'Submit to local leaderboard';
+      $('#submit-status').textContent = '';
+      $('#share-status').textContent = '';
+      $('#share-box').hidden = true;
+      this.showScreen('results');
+      this.animateScore(score.total);
+    },
+
+    animateScore(target) {
+      const node = $('#final-score');
+      node.dataset.final = String(target);
+      if (Motion.reduced) { node.textContent = formatInt(target); return; }
+      const started = performance.now();
+      const duration = 1200;
+      const step = (now) => {
+        const t = clamp((now - started) / duration, 0, 1);
+        node.textContent = formatInt(target * (1 - Math.pow(1 - t, 3)));
+        if (t < 1 && node.dataset.final === String(target)) requestAnimationFrame(step);
+        else node.textContent = formatInt(target);
+      };
+      requestAnimationFrame(step);
+    },
+
+    /** Idempotent: the first call creates the submission, later calls reuse it. */
+    submitScore() {
+      const s = this.state;
+      if (!s || !s.finished) return Promise.resolve({ accepted: false, reason: 'not-finished' });
+      if (s.submission) return s.submission;
+      const button = $('#submit-score');
+      button.disabled = true;
+      const entry = {
+        id: s.runId, name: s.nickname, score: s.final.score, wpm: s.final.wpm, accuracy: s.final.accuracy, createdAt: Date.now(),
+      };
+      s.submission = LeaderboardService.submit(entry).then(async (result) => {
+        if (result.accepted || result.reason === 'duplicate') {
+          Storage.set(GAME_CONFIG.storageKeys.lastEntryId, s.runId);
+          const standings = await LeaderboardService.standings();
+          const mine = standings.find((e) => e.id === s.runId);
+          s.submittedRank = mine ? mine.rank : null;
+          $('#medal-rank').textContent = mine ? `#${mine.rank}` : '—';
+          $('#submit-status').textContent = mine ? `Saved. You are #${mine.rank} of ${standings.length} on the local leaderboard.` : 'Saved.';
+          button.textContent = 'Submitted ✓';
+        } else {
+          s.submission = null;
+          button.disabled = false;
+          $('#submit-status').textContent = 'Could not save: this browser blocks local storage.';
+        }
+        return result;
+      });
+      return s.submission;
+    },
+
+    shareText() {
+      const s = this.state;
+      return `I just survived CTO.exe with ${formatInt(s.final.score)} points. ${GAME_CONFIG.challengeMessages[0]}`;
+    },
+
+    challengeUrl() {
+      const s = this.state;
+      return ShareService.buildChallengeUrl({ nickname: s.nickname, score: s.final.score, challengeId: s.challengeId, messageIndex: s.runId.length % GAME_CONFIG.challengeMessages.length });
+    },
+
+    async challenge() {
+      const url = this.challengeUrl();
+      const text = this.shareText();
+      $('#share-output').value = url;
+      $('#share-box').hidden = false;
+      const status = $('#share-status');
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: 'CTO.exe — Prove You\'re Not a Junior', text, url });
+          status.textContent = 'Challenge sent. May the fastest keyboard win.';
+          return;
+        } catch (error) {
+          if (error && error.name === 'AbortError') { status.textContent = 'Sharing cancelled. The link is below if you change your mind.'; return; }
+        }
+      }
+      const copied = await ShareService.copyText(`${text}\n${url}`);
+      status.textContent = copied ? 'Challenge link copied to clipboard.' : 'Copy the challenge link below.';
+      if (!copied) $('#share-output').select();
+    },
+
+    resultsText() {
+      const s = this.state;
+      const f = s.final;
+      return [
+        'CTO.exe — Benchmark Results',
+        `Player: ${s.nickname}`,
+        `Score: ${formatInt(f.score)} (${Scoring.rankTitle(f.score)})`,
+        `Typing: ${f.wpm} WPM · ${formatPct(f.accuracy)} accuracy · ${formatInt(f.keystrokes)} keystrokes`,
+        `Puzzles: ${f.correct}/${f.questionCount} correct`,
+        `Active time: ${formatDuration(f.activeSeconds)}`,
+        s.submittedRank ? `Local leaderboard rank: #${s.submittedRank}` : null,
+        `Play: ${ShareService.gameBaseUrl().toString()}`,
+      ].filter(Boolean).join('\n');
+    },
+
+    async copyResults() {
+      const copied = await ShareService.copyText(this.resultsText());
+      $('#share-status').textContent = copied ? 'Results copied to clipboard.' : 'Clipboard unavailable in this browser.';
+    },
+
+    /* ---------------------------- reveal ----------------------------- */
+    showReveal() {
+      const s = this.state;
+      if (!s || !s.finished) return;
+      const variant = s.rules.revealVariant;
+      const daniel = PLAYER_RULES.profiles.daniel.inputInterference;
+      const richard = PLAYER_RULES.profiles.richard;
+      const pct = (v) => `${Math.round(v * 100)}%`;
+      $('#reveal-quote').textContent = variant === 'richard'
+        ? 'Architect privileges confirmed. The benchmark is working as designed.'
+        : 'Congratulations. You\'ve completed a benchmark designed by Richard. The keyboard was never going to let Daniel win.';
+      const body = [];
+      if (variant === 'daniel') {
+        body.push(el('p', { text: `Daniel, your keyboard is fine. Really. During this run the benchmark quietly swallowed ${s.prankStats.rejectedKeystrokes} of your keystrokes, lagged its own highlighting ${plural(s.prankStats.delayedFrames, 'time')} and raised ${plural(s.prankStats.glitchNotices, 'completely made-up hardware warning')}. All on purpose.` }));
+        body.push(el('p', { class: 'muted', text: 'Nothing outside this page was touched: only the typing box in this game ever dropped a key. Your WPM and accuracy above count only the keystrokes the game accepted.' }));
+      } else if (variant === 'richard') {
+        body.push(el('p', { text: `Your typing points were multiplied by ${richard.scoring.typingScoreMultiplier}×, your puzzle points by ${richard.scoring.riddleScoreMultiplier}×, every timer silently ran ${pct(richard.timing.timerAssistFactor)} longer, and each level paid an extra ${richard.scoring.hiddenLevelBonus} points.` }));
+        body.push(el('p', { class: 'muted', text: 'Your displayed WPM and accuracy are real. Only the leaderboard score is… architecturally enhanced.' }));
+      } else {
+        body.push(el('p', { text: 'You played the honest version. Two nicknames did not:' }));
+      }
+      body.push(el('ul', { class: 'reveal-list' }, [
+        el('li', { text: `"Daniel": ${pct(daniel.rejectRateMin)}–${pct(daniel.rejectRateMax)} of printable keystrokes in the typing box are ignored, rising further in the last 25% of each passage and ${daniel.bossIntensity}× in the final boss; occasional ${daniel.feedbackDelayMinMs}–${daniel.feedbackDelayMaxMs} ms highlight lag and the odd fictional glitch alert.` }),
+        el('li', { text: `"Richard": ${richard.scoring.typingScoreMultiplier}× typing score, ${richard.scoring.riddleScoreMultiplier}× puzzle score, invisible extra time and hidden level bonuses — with perfectly ordinary-looking stats.` }),
+        el('li', { text: 'Everyone else: a completely fair benchmark. Probably.' }),
+      ]));
+      body.push(el('p', { class: 'muted small', text: 'All scores are local, client-side and unverified. This is an office prank, not a hiring tool.' }));
+      $('#reveal-body').replaceChildren(...body);
+      this.showScreen('reveal');
+    },
+
+    /* -------------------------- leaderboard -------------------------- */
+    async openLeaderboard() {
+      if (this.screen === 'level' || this.screen === 'interlude') return;
+      if (this.screen !== 'leaderboard') this.returnScreen = this.screen || 'intro';
+      $('#leaderboard-status').textContent = '';
+      this.resetClearButton();
+      await this.renderLeaderboard();
+      this.showScreen('leaderboard');
+    },
+
+    async renderLeaderboard() {
+      const shared = this.leaderboardTab === 'shared' && this.sharedStandings;
+      const standings = shared ? this.sharedStandings : await LeaderboardService.standings();
+      const currentId = Storage.get(GAME_CONFIG.storageKeys.lastEntryId, null);
+      $('#leaderboard-title').textContent = shared ? 'Shared leaderboard (read-only)' : 'Local leaderboard';
+      $('#tab-local').setAttribute('aria-selected', String(!shared));
+      $('#tab-shared').setAttribute('aria-selected', String(!!shared));
+      $('#clear-leaderboard').hidden = !!shared;
+      $('#board-note').textContent = shared
+        ? 'Read-only standings committed to the repository as shared-leaderboard.json. Scores are self-reported and not independently verified.'
+        : 'Local leaderboard: scores are stored only in this browser (localStorage) and are not synchronized anywhere. GitHub Pages is static hosting, so a truly global, writable leaderboard would need a separate service or API. Demo competitors are fictional.';
+      $('#leaderboard-body').replaceChildren(...standings.map((entry) => {
+        const isCurrent = !shared && entry.id === currentId;
+        const classes = [entry.rank <= 3 ? `rank-${entry.rank}` : '', isCurrent ? 'is-current' : ''].filter(Boolean).join(' ');
+        return el('tr', { class: classes || null, dataset: { id: entry.id } }, [
+          el('td', {}, el('span', { class: 'rank-pill', text: String(entry.rank) })),
+          el('td', { class: 'player' }, [entry.name, entry.demo ? el('span', { class: 'tag', text: 'demo' }) : null, isCurrent ? el('span', { class: 'tag you', text: 'you' }) : null]),
+          el('td', { class: 'num score', text: formatInt(entry.score) }),
+          el('td', { class: 'num', text: String(entry.wpm) }),
+          el('td', { class: 'num', text: formatPct(entry.accuracy) }),
+        ]);
+      }));
+    },
+
+    resetClearButton() {
+      const button = $('#clear-leaderboard');
+      button.dataset.confirm = '';
+      button.textContent = 'Clear local leaderboard';
+    },
+
+    async clearLeaderboard() {
+      const button = $('#clear-leaderboard');
+      if (button.dataset.confirm !== 'pending') {
+        button.dataset.confirm = 'pending';
+        button.textContent = 'Click again to confirm';
+        return;
+      }
+      await LeaderboardService.clear();
+      this.resetClearButton();
+      $('#leaderboard-status').textContent = 'Local leaderboard cleared. The demo competitors remain, smugly.';
+      if (this.state) { this.state.submittedRank = null; }
+      await this.renderLeaderboard();
+    },
+
+    /* ---------------------------- easter eggs ------------------------ */
+    initEasterEggs() {
+      const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+      let position = 0;
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') { Modal.close(); Matrix.close(); return; }
+        if (event.ctrlKey || event.metaKey || event.altKey) return;
+        const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+        position = key === konami[position] ? position + 1 : key === konami[0] ? 1 : 0;
+        if (position === konami.length) {
+          position = 0;
+          Matrix.open();
+          this.unlock('cheatCodeEnjoyer');
+        }
+      });
+
+      let clicks = 0;
+      let resetTimer = null;
+      $('#version-label').addEventListener('click', () => {
+        clicks += 1;
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(() => { clicks = 0; }, 2000);
+        if (clicks >= 5) {
+          clicks = 0;
+          this.unlock('readsReleaseNotes');
+          Modal.open(`CTO.exe ${GAME_CONFIG.version} — Release notes`, [
+            el('ul', {}, [
+              el('li', { text: 'Fixed: leaderboard now sorts by score instead of by seniority.' }),
+              el('li', { text: 'Fixed: keyboard calibration no longer consults the org chart. Mostly.' }),
+              el('li', { text: 'Improved: fairness module is now 12% more fair (measured by the fairness module).' }),
+              el('li', { text: 'Known issue: some keyboards experience "character shrinkage" under pressure. Works as designed.' }),
+              el('li', { text: 'Removed: the "Blame frontend" button. It was being used in production.' }),
+              el('li', { text: 'Security: we cannot confirm or deny that the benchmark has opinions.' }),
+            ]),
+          ]);
+        }
+      });
+    },
+
+    /* ------------------------------ boot ----------------------------- */
+    initChallengeBanner() {
+      const challenge = ShareService.parseChallenge(location.search);
+      if (!challenge) return;
+      $('#challenge-from').textContent = challenge.from;
+      $('#challenge-message').textContent = challenge.message;
+      $('#challenge-claim').textContent = `${formatInt(challenge.claim)} points`;
+      $('#challenge-banner').hidden = false;
+      this.incomingChallenge = challenge;
+    },
+
+    init() {
+      Particles.init();
+      Motion.init();
+      Modal.init();
+      this.initEasterEggs();
+      this.initChallengeBanner();
+
+      $('#nickname-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const nickname = sanitizeNickname($('#nickname').value);
+        const error = $('#nickname-error');
+        if (!nickname) {
+          error.textContent = 'Invalid nickname. Use 1–20 letters, numbers, spaces, _ . - \' ( ). Even juniors can do that.';
+          $('#nickname').setAttribute('aria-invalid', 'true');
+          $('#nickname').focus();
+          return;
+        }
+        error.textContent = '';
+        $('#nickname').removeAttribute('aria-invalid');
+        this.start(nickname);
+      });
+      $('#interlude-continue').addEventListener('click', () => this.continueFromInterlude());
+      $('#submit-score').addEventListener('click', () => this.submitScore());
+      $('#challenge-btn').addEventListener('click', () => this.challenge());
+      $('#copy-results').addEventListener('click', () => this.copyResults());
+      $('#share-output').addEventListener('focus', (event) => event.target.select());
+      const playAgain = () => { if (this.currentLevel) this.currentLevel.destroy(); this.currentLevel = null; this.state = null; this.showScreen('intro', $('#nickname')); };
+      $('#play-again').addEventListener('click', playAgain);
+      $('#reveal-play-again').addEventListener('click', playAgain);
+      $('#view-leaderboard').addEventListener('click', () => this.openLeaderboard());
+      $('#open-leaderboard').addEventListener('click', () => this.openLeaderboard());
+      $('#behind-benchmark').addEventListener('click', () => this.showReveal());
+      $('#reveal-back').addEventListener('click', () => this.showScreen('results'));
+      $('#leaderboard-back').addEventListener('click', () => this.showScreen(this.returnScreen === 'leaderboard' ? 'intro' : this.returnScreen));
+      $('#clear-leaderboard').addEventListener('click', () => this.clearLeaderboard());
+      $('#tab-local').addEventListener('click', () => { this.leaderboardTab = 'local'; this.renderLeaderboard(); });
+      $('#tab-shared').addEventListener('click', () => { this.leaderboardTab = 'shared'; this.renderLeaderboard(); });
+
+      LeaderboardService.sharedStandings().then((standings) => {
+        this.sharedStandings = standings;
+        $('#tab-shared').hidden = !standings;
+      });
+
+      this.screen = 'intro';
+    },
+  };
+
+  /* =====================================================================
+     13. TEST HOOKS — only attached when a test harness pre-defines
+     window.__CTO_TEST_HOOKS__ before the page loads. Never in normal play.
+     ===================================================================== */
+  if (testHooks) {
+    testHooks.api = {
+      GAME_CONFIG, PLAYER_RULES, SCORE_WEIGHTS, Scoring, ShareService,
+      resolvePlayerRules, normalizeNickname, sanitizeNickname, rankEntries, createSeededRandom, InputInterference,
+      getState: () => (Game.state ? JSON.parse(JSON.stringify(Game.state)) : null),
+      currentQuestion: () => (Game.currentLevel instanceof QuizLevel ? Game.currentLevel.questions[Game.currentLevel.index] : null),
+      currentPassage: () => (Game.currentLevel instanceof TypingLevel ? Game.currentLevel.passage : null),
+      submitScore: () => Game.submitScore(),
+      standings: () => LeaderboardService.standings(),
+    };
+  }
+
+  Game.init();
+})();
+</script>
+</body>
+</html>

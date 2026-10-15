@@ -1,0 +1,18 @@
+{
+  "name": "cto-exe",
+  "version": "4.0.4",
+  "private": true,
+  "description": "CTO.exe — Prove You're Not a Junior. A static, single-file browser game. Dependencies here are for development/testing only.",
+  "license": "MIT",
+  "scripts": {
+    "serve": "node tests/static-server.js",
+    "test": "playwright test",
+    "test:desktop": "playwright test --project=desktop-chromium",
+    "test:mobile": "playwright test --project=mobile-chromium",
+    "test:headed": "playwright test --headed --project=desktop-chromium",
+    "test:install": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}
